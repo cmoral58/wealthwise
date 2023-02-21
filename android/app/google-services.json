@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "972334264189",
+    "project_id": "wealthwise-prototype",
+    "storage_bucket": "wealthwise-prototype.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972334264189:android:575ad9860974e4f906a614",
+        "android_client_info": {
+          "package_name": "com.example.wealthwise"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "972334264189-4tljv82dlkum7l6ukcflt0vhmetgff6m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATcYk-7eQHs-_CQnFQjUCJEYjBnU1iAJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "972334264189-4tljv82dlkum7l6ukcflt0vhmetgff6m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
