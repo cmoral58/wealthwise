@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     _password = TextEditingController();
     super.initState();
   }
+
   // dispose method used to release the memory allocated to variables when state object is removed.
   // avoid memory leakage warning later on
   @override
@@ -89,8 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                                 fontFamily: 'Montserrat',
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
-                                color: Colors.grey
-                            ),
+                                color: Colors.grey),
                           ),
                         ),
                       ),
@@ -125,8 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
-                              color: Colors.grey
-                          ),
+                              color: Colors.grey),
                         ),
                       ),
                     ),
@@ -143,7 +142,8 @@ class _LoginPageState extends State<LoginPage> {
                             final password = _password.text;
 
                             try {
-                              final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                              final userCredential = await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
                                 email: email,
                                 password: password,
                               );
@@ -157,10 +157,12 @@ class _LoginPageState extends State<LoginPage> {
                           style: ElevatedButton.styleFrom(
                             shadowColor: Colors.lightBlueAccent,
                             elevation: 4.0,
-                            backgroundColor: const Color.fromRGBO(64, 91, 159, 1),
+                            backgroundColor:
+                                const Color.fromRGBO(64, 91, 159, 1),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18.0),
-                              side: const BorderSide(color: Color.fromRGBO(64, 91, 159, 1)),
+                              side: const BorderSide(
+                                  color: Color.fromRGBO(64, 91, 159, 1)),
                             ),
                           ),
                           child: const Text('Log In')),
@@ -176,8 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-
-                          onPressed: (){},
+                          onPressed: () {},
                           icon: Image.asset('images/google.png'),
                           iconSize: 60,
                         ),
@@ -185,13 +186,12 @@ class _LoginPageState extends State<LoginPage> {
                           width: 50.0,
                         ),
                         IconButton(
-                          onPressed: (){},
+                          onPressed: () {},
                           icon: Image.asset('images/apple.png'),
                           iconSize: 60,
                         ),
                       ],
                     ),
-
                   ],
                 ),
               );
