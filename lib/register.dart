@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wealthwise/dashboard.dart';
+import 'package:wealthwise/utils/validator.dart';
+import 'utils/fire_auth.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -15,6 +18,18 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+
+  final _registerFormKey = GlobalKey<FormState>();
+
+  final _nameTextController = TextEditingController();
+  final _emailTextController = TextEditingController();
+  final _passwordTextController = TextEditingController();
+
+  final _focusName = FocusNode();
+  final _focusEmail = FocusNode();
+  final _focusPassword = FocusNode();
+
+  bool _isProcessing = false;
 
   late final TextEditingController _email;
   late final TextEditingController _password;
@@ -46,163 +61,211 @@ class _RegisterPageState extends State<RegisterPage> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 100.0,
-                    ),
-
-                    Image.asset(
-                        'images/logo.png',
-                    ),
-
-                    Image.asset(
-                      'images/save.png',
-                    ),
-                    const SizedBox(
-                      height: 50.0,
-                    ),
-                    const Text('Enter an email and password to get started.',
-                      style: TextStyle(
-                        color: Color.fromRGBO(111, 146, 240, 1),
-                        // adds custom font
-                        // custom font is located in the pubspec.yaml file
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                child: Form(
+                  key: _registerFormKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 100.0,
                       ),
-                    ),
 
-                    const SizedBox(
-                      height: 30.0,
-                    ),
+                      Image.asset(
+                          'images/logo.png',
+                      ),
 
-                    Center(
-                      child: SizedBox(
+                      Image.asset(
+                        'images/save.png',
+                      ),
+
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+
+                      SizedBox(
                         width: 300.0,
-                        child: TextField(
-                          controller: _email,
+                        child: TextFormField(
+                          controller: _nameTextController,
+                          focusNode: _focusName,
+                          validator: (value) => Validator.validateName(name: value),
                           enableSuggestions: false,
                           autocorrect: false,
-                          keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                  color: Color.fromRGBO(64, 91, 159, 1),
-                                  width: 3.0,
+                                color: Color.fromRGBO(64, 91, 159, 1),
+                                width: 3.0,
                               ),
                             ),
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                  color: Color.fromRGBO(64, 91, 159, 1),
-                                  width: 3.0,
+                                color: Color.fromRGBO(64, 91, 159, 1),
+                                width: 3.0,
                               ),
                             ),
                             // adds icon to the front of input field
                             prefixIcon: Icon(
-                              Icons.account_circle_outlined,
+                              Icons.verified_user_outlined,
                               color: Colors.grey,
                             ),
-                            hintText: 'Email',
+                            hintText: 'Name',
                             hintStyle: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: Colors.grey
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Colors.grey
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 300.0,
-                      child: TextField(
-                        controller: _password,
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        decoration: const InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color.fromRGBO(64, 91, 159, 1),
-                              width: 3.0,
-                            ),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color.fromRGBO(64, 91, 159, 1),
-                              width: 3.0,
-                            ),
-                          ),
-                          prefixIcon: Icon(
-                            // adds icon to the front of input field
-                            Icons.lock_outline,
-                            color: Colors.grey,
-                          ),
-                          hintText: 'Password',
-                          hintStyle: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: Colors.grey
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 60.0,
-                    ),
-                    SizedBox(
-                      width: 200.0,
-                      height: 50.0,
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            // grabs the text that the user has inputted
-                            final email = _email.text;
-                            final password = _password.text;
 
-                            final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                              email: email,
-                              password: password,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shadowColor: Colors.lightBlueAccent,
-                            elevation: 4.0,
-                            backgroundColor: const Color.fromRGBO(64, 91, 159, 1),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: const BorderSide(color: Color.fromRGBO(64, 91, 159, 1)),
+                      Center(
+                        child: SizedBox(
+                          width: 300.0,
+                          child: TextFormField(
+                            controller: _emailTextController,
+                            focusNode: _focusEmail,
+                            validator: (value) => Validator.validateEmail(email: value),
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: const InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromRGBO(64, 91, 159, 1),
+                                    width: 3.0,
+                                ),
                               ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromRGBO(64, 91, 159, 1),
+                                    width: 3.0,
+                                ),
+                              ),
+                              // adds icon to the front of input field
+                              prefixIcon: Icon(
+                                Icons.account_circle_outlined,
+                                color: Colors.grey,
+                              ),
+                              hintText: 'Email',
+                              hintStyle: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Colors.grey
+                              ),
+                            ),
                           ),
-                          child: const Text('Register')),
-                    ),
-                    const SizedBox(
-                      height: 30.0,
-                    ),
-
-                    // TODO: configure google and apple sign in with firebase (register page)
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-
-                          onPressed: (){},
-                          icon: Image.asset('images/google.png'),
-                          iconSize: 60,
                         ),
-                        const SizedBox(
-                          width: 50.0,
+                      ),
+                      SizedBox(
+                        width: 300.0,
+                        child: TextFormField(
+                          controller: _passwordTextController,
+                          focusNode: _focusPassword,
+                          validator: (value) => Validator.validatePassword(password: value),
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          decoration: const InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromRGBO(64, 91, 159, 1),
+                                width: 3.0,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromRGBO(64, 91, 159, 1),
+                                width: 3.0,
+                              ),
+                            ),
+                            prefixIcon: Icon(
+                              // adds icon to the front of input field
+                              Icons.lock_outline,
+                              color: Colors.grey,
+                            ),
+                            hintText: 'Password',
+                            hintStyle: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Colors.grey
+                            ),
+                          ),
                         ),
-                        IconButton(
-                          onPressed: (){},
-                          icon: Image.asset('images/apple.png'),
-                          iconSize: 60,
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      const SizedBox(
+                        height: 60.0,
+                      ),
+                      _isProcessing
+                      ? const CircularProgressIndicator()
+                      : SizedBox(
+                        width: 200.0,
+                        height: 50.0,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              setState(() {
+                                _isProcessing = true;
+                              });
+
+                              if(_registerFormKey.currentState!.validate()) {
+                                User? user = await FireAuth
+                                    .registerUsingEmailPassword(
+                                  name: _nameTextController.text,
+                                  email: _emailTextController.text,
+                                  password: _passwordTextController.text,
+                                );
+                                setState(() {
+                                  _isProcessing = false;
+                                });
+                                if (user != null) {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(builder: (context) =>
+                                        Dashboard(user: user),
+                                    ),
+                                    ModalRoute.withName('/'),
+                                  );
+                                }
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shadowColor: Colors.lightBlueAccent,
+                              elevation: 4.0,
+                              backgroundColor: const Color.fromRGBO(64, 91, 159, 1),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: const BorderSide(color: Color.fromRGBO(64, 91, 159, 1)),
+                                ),
+                            ),
+                            child: const Text('Register'),),
+                      ),
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+
+                      // TODO: configure google and apple sign in with firebase (register page)
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+
+                            onPressed: (){},
+                            icon: Image.asset('images/google.png'),
+                            iconSize: 60,
+                          ),
+                          const SizedBox(
+                            width: 50.0,
+                          ),
+                          IconButton(
+                            onPressed: (){},
+                            icon: Image.asset('images/apple.png'),
+                            iconSize: 60,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             default:
