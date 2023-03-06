@@ -38,6 +38,8 @@ dependencies:
   firebase_core: ^2.5.0
   firebase_auth: ^4.2.6
   carousel_slider: ^4.2.1
+  fl_chart: ^0.61.0
+  calendar_timeline: ^1.1.1
 
 dev_dependencies:
   flutter_test:

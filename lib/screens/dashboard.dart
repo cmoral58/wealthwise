@@ -29,7 +29,7 @@ class _DashboardState extends State<Dashboard> {
   // navigation indexes for bottomNavigationBar
   late final List<Widget> _pages = [
     HomePage(user: _currentUser),
-    const PlanningScreen(),
+    PlanningScreen(user: _currentUser),
     const CalendarScreen(),
   ];
 
