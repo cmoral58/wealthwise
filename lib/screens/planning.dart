@@ -12,7 +12,7 @@ class _PlanningScreenState extends State<PlanningScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calendar Screen'),
+        title: const Text('Planning Screen'),
       ),
       body: Column(children: const [
           Text('This is planning page')
