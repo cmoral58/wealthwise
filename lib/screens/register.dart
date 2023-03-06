@@ -6,10 +6,6 @@ import '../utils/fire_auth.dart';
 import '../utils/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-// TODO: improve register screen
-
-
-
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -36,7 +32,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();

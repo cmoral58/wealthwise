@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wealthwise/screens/home.dart';
 import 'package:wealthwise/screens/dashboard.dart';
 import 'package:wealthwise/utils/fire_auth.dart';
 import 'package:wealthwise/utils/validator.dart';
 import '../utils/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
-
-// Flutter Course for Beginners - 37 hour Cross Platform App Development
-// TODO: finish setting up login view with firebase
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -29,7 +27,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
@@ -182,17 +179,6 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.of(context)
                                       .pushReplacement(MaterialPageRoute(builder: (context) => Dashboard(user: user)));
                                 }
-                                // try {
-                                //
-                                //   // print(userCredential);
-                                //   // error handling
-                                // } on FirebaseAuthException catch (e){
-                                //   if(e.code == 'user-not-found') {
-                                //     print('User not found');
-                                //   } else if(e.code == 'wrong-password'){
-                                //     print('Wrong password');
-                                //   }
-                                // }
                               }
 
 

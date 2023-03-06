@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'utils/firebase_options.dart';
-import 'screens/home.dart';
+import 'screens/welcome.dart';
 
 Future<void> main() async {
   // initializes firebase on app start up
@@ -22,9 +22,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // HomePage is in home.dart file
+      // HomePage is in welcome.dart file
       // cleans up the main file
-      home: const HomePage(),
+      home: const WelcomePage(),
       // removes debug banner from app bar
       debugShowCheckedModeBanner: false,
     );
