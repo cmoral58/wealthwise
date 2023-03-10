@@ -1,3 +1,4 @@
+import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wealthwise/screens/home.dart';
@@ -44,25 +45,45 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
       return Scaffold(
         body: _pages[_selectedIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(
+
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: DotNavigationBar(
+            margin: const EdgeInsets.only(left: 10, right: 10),
+            currentIndex: _selectedIndex,
+            dotIndicatorColor: Colors.white,
+            unselectedItemColor: Colors.grey[300],
+            boxShadow: const <BoxShadow>[
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 5
+              )
+            ],
+            // enableFloatingNavBar: false,
+            onTap: _onItemTapped,
+            items: [
+                /// Home
+                DotNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: 'Home'
-            ),
-            BottomNavigationBarItem(
+                selectedColor: Color(0xff73544C),
+                ),
+
+                /// Likes
+                DotNavigationBarItem(
                 icon: Icon(Icons.event_note),
-                label: 'Planning'
-            ),
-            BottomNavigationBarItem(
+                selectedColor: Color(0xff73544C),
+                ),
+
+                /// Search
+                DotNavigationBarItem(
                 icon: Icon(Icons.calendar_month),
-                label: 'Calendar'
+                selectedColor: Color(0xff73544C),
+                ),
+
+              ],
             ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.lightBlueAccent,
-          onTap: _onItemTapped,
-        ),
+          ),
+
       );
   }
 }

@@ -40,6 +40,7 @@ dependencies:
   carousel_slider: ^4.2.1
   fl_chart: ^0.61.0
   calendar_timeline: ^1.1.1
+  dot_navigation_bar: ^1.0.1+2
 
 dev_dependencies:
   flutter_test:
