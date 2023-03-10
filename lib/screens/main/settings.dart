@@ -1,18 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'login.dart';
+import '../initial/login.dart';
 
-class HomePage extends StatefulWidget {
+class SettingsPage extends StatefulWidget {
   final User user;
-  const HomePage({super.key, required this.user});
-  // const HomePage({Key? key}) : super(key: key);
+  const SettingsPage({super.key, required this.user});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
@@ -23,8 +22,10 @@ class _HomePageState extends State<HomePage> {
   bool _isSigningOut = false;
   late User _currentUser;
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Center(
         child: Column(

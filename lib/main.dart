@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'utils/firebase_options.dart';
-import 'screens/welcome.dart';
+import 'screens/initial/welcome.dart';
 
 Future<void> main() async {
   // initializes firebase on app start up

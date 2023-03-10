@@ -1,12 +1,11 @@
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:wealthwise/screens/home.dart';
-import 'package:wealthwise/screens/calendar.dart';
-import 'package:wealthwise/screens/planning.dart';
+import 'package:wealthwise/screens/main/home.dart';
+import 'package:wealthwise/screens/main/calendar.dart';
+import 'package:wealthwise/screens/main/planning.dart';
+import 'package:wealthwise/screens/main/settings.dart';
 
-import '../utils/fire_auth.dart';
-import 'login.dart';
 
 class Dashboard extends StatefulWidget {
   final User user;
@@ -31,7 +30,8 @@ class _DashboardState extends State<Dashboard> {
   late final List<Widget> _pages = [
     HomePage(user: _currentUser),
     PlanningScreen(user: _currentUser),
-    const CalendarScreen(),
+    CalendarScreen(user: _currentUser),
+    SettingsPage(user: _currentUser),
   ];
 
   void _onItemTapped(int index) {
@@ -65,19 +65,25 @@ class _DashboardState extends State<Dashboard> {
                 /// Home
                 DotNavigationBarItem(
                 icon: Icon(Icons.home),
-                selectedColor: Color(0xff73544C),
+                selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 
-                /// Likes
+                /// Planning
                 DotNavigationBarItem(
                 icon: Icon(Icons.event_note),
-                selectedColor: Color(0xff73544C),
+                selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 
-                /// Search
+                /// Calendar
                 DotNavigationBarItem(
                 icon: Icon(Icons.calendar_month),
-                selectedColor: Color(0xff73544C),
+                selectedColor: const Color.fromRGBO(64, 91, 159, 1),
+                ),
+
+                /// Settings
+                DotNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 
               ],

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 class PlanningScreen extends StatefulWidget {
   final User user;
   const PlanningScreen({super.key, required this.user});
-  // const PlanningScreen({Key? key}) : super(key: key);
 
   @override
   State<PlanningScreen> createState() => _PlanningScreenState();

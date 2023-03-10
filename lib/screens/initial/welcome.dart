@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wealthwise/screens/login.dart';
-import 'package:wealthwise/screens/register.dart';
+import 'package:wealthwise/screens/initial/login.dart';
+import 'package:wealthwise/screens/initial/register.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 // current images used are from freepik.com (image by redgreystock on freepik)
 

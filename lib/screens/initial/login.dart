@@ -1,34 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:wealthwise/screens/dashboard.dart';
+import 'package:wealthwise/screens/main/home.dart';
+import 'package:wealthwise/screens/main/dashboard.dart';
+import 'package:wealthwise/utils/fire_auth.dart';
 import 'package:wealthwise/utils/validator.dart';
-import '../utils/fire_auth.dart';
-import '../utils/firebase_options.dart';
+import '../../utils/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-
-  final _registerFormKey = GlobalKey<FormState>();
-
-  final _nameTextController = TextEditingController();
+class _LoginPageState extends State<LoginPage> {
+  bool _isProcessing = false;
+  final _formkey = GlobalKey<FormState>();
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
-
-  final _focusName = FocusNode();
   final _focusEmail = FocusNode();
   final _focusPassword = FocusNode();
-
-  bool _isProcessing = false;
-
   late final TextEditingController _email;
   late final TextEditingController _password;
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -57,62 +52,21 @@ class _RegisterPageState extends State<RegisterPage> {
             case ConnectionState.done:
               return SingleChildScrollView(
                 child: Form(
-                  key: _registerFormKey,
+                  key: _formkey,
                   child: Column(
                     children: [
                       const SizedBox(
                         height: 100.0,
                       ),
-
                       Image.asset(
-                          'images/logo.png',
+                        'images/logo.png',
                       ),
-
                       Image.asset(
                         'images/save.png',
                       ),
-
                       const SizedBox(
                         height: 30.0,
                       ),
-
-                      SizedBox(
-                        width: 300.0,
-                        child: TextFormField(
-                          controller: _nameTextController,
-                          focusNode: _focusName,
-                          validator: (value) => Validator.validateName(name: value),
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          decoration: const InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromRGBO(64, 91, 159, 1),
-                                width: 3.0,
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromRGBO(64, 91, 159, 1),
-                                width: 3.0,
-                              ),
-                            ),
-                            // adds icon to the front of input field
-                            prefixIcon: Icon(
-                              Icons.verified_user_outlined,
-                              color: Colors.grey,
-                            ),
-                            hintText: 'Name',
-                            hintStyle: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: Colors.grey
-                            ),
-                          ),
-                        ),
-                      ),
-
                       Center(
                         child: SizedBox(
                           width: 300.0,
@@ -126,14 +80,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             decoration: const InputDecoration(
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: Color.fromRGBO(64, 91, 159, 1),
-                                    width: 3.0,
+                                  color: Color.fromRGBO(64, 91, 159, 1),
+                                  width: 3.0,
                                 ),
                               ),
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: Color.fromRGBO(64, 91, 159, 1),
-                                    width: 3.0,
+                                  color: Color.fromRGBO(64, 91, 159, 1),
+                                  width: 3.0,
                                 ),
                               ),
                               // adds icon to the front of input field
@@ -143,10 +97,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               hintText: 'Email',
                               hintStyle: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: Colors.grey
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  color: Colors.grey
                               ),
                             ),
                           ),
@@ -157,7 +111,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: TextFormField(
                           controller: _passwordTextController,
                           focusNode: _focusPassword,
-                          validator: (value) => Validator.validatePassword(password: value),
+                          validator: (value) => Validator.validatePassword( password: value),
                           obscureText: true,
                           enableSuggestions: false,
                           autocorrect: false,
@@ -190,55 +144,63 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       const SizedBox(
-                        height: 60.0,
+                        height: 80.0,
                       ),
-                      _isProcessing
-                      ? const CircularProgressIndicator()
+                      _isProcessing ?
+                          const CircularProgressIndicator()
                       : SizedBox(
                         width: 200.0,
                         height: 50.0,
                         child: ElevatedButton(
                             onPressed: () async {
-                              setState(() {
-                                _isProcessing = true;
-                              });
+                              _focusEmail.unfocus();
+                              _focusPassword.unfocus();
 
-                              if(_registerFormKey.currentState!.validate()) {
-                                User? user = await FireAuth
-                                    .registerUsingEmailPassword(
-                                  name: _nameTextController.text,
+                              if (_formkey.currentState!.validate()) {
+                                setState(() {
+                                  _isProcessing = true;
+                                });
+                                User? user = await FireAuth.signInUsingEmailPassword(
                                   email: _emailTextController.text,
                                   password: _passwordTextController.text,
+
                                 );
+                                // final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                                //   email: email,
+                                //   password: password,
+                                //
+                                // );
+
                                 setState(() {
                                   _isProcessing = false;
                                 });
+
                                 if (user != null) {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(builder: (context) =>
-                                        Dashboard(user: user),
-                                    ),
-                                    ModalRoute.withName('/'),
-                                  );
+                                  Navigator.of(context)
+                                      .pushReplacement(MaterialPageRoute(builder: (context) => Dashboard(user: user)));
                                 }
                               }
+
+
+
                             },
                             style: ElevatedButton.styleFrom(
                               shadowColor: Colors.lightBlueAccent,
                               elevation: 4.0,
                               backgroundColor: const Color.fromRGBO(64, 91, 159, 1),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: const BorderSide(color: Color.fromRGBO(64, 91, 159, 1)),
-                                ),
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: const BorderSide(color: Color.fromRGBO(64, 91, 159, 1)),
+                              ),
                             ),
-                            child: const Text('Register'),),
+                            child: const Text('Log In')),
                       ),
+
                       const SizedBox(
                         height: 30.0,
                       ),
 
-                      // TODO: configure google and apple sign in with firebase (register page)
+                      // TODO: configure google and apple sign in with firebase (login page)
 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -259,6 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ],
                       ),
+
                     ],
                   ),
                 ),
@@ -271,4 +234,3 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
-
