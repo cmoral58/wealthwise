@@ -43,6 +43,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /// Allows for transparency
+      extendBodyBehindAppBar: true,
+      /// Allows the ability to go back a page
+      appBar: AppBar(
+        /// Used to change the color of the back arrow (default color is white)
+        iconTheme: const IconThemeData(
+          color: Color.fromRGBO(64, 91, 159, 1),
+        ),
+        /// Makes app bar transparent (default color is blue)
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,

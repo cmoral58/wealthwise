@@ -8,7 +8,7 @@ import 'package:wealthwise/screens/main/settings.dart';
 
 
 class Dashboard extends StatefulWidget {
-  final User user;
+  final User? user;
   const Dashboard({super.key, required this.user});
 
   @override
@@ -18,7 +18,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
-    _currentUser = widget.user;
+    _currentUser = widget.user!;
     super.initState();
   }
 
