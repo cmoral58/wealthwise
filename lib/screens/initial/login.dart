@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:wealthwise/screens/main/home.dart';
 import 'package:wealthwise/screens/main/dashboard.dart';
 import 'package:wealthwise/utils/fire_auth.dart';
+import 'package:wealthwise/utils/google_sign_in.dart';
 import 'package:wealthwise/utils/validator.dart';
 import '../../utils/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,7 +17,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  /// BOOL variable to determine whether the user is signed in (true) or not (false)
   bool _isProcessing = false;
+
   final _formkey = GlobalKey<FormState>();
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
@@ -159,8 +163,8 @@ class _LoginPageState extends State<LoginPage> {
                         height: 80.0,
                       ),
                       _isProcessing ?
-                          const CircularProgressIndicator()
-                      : SizedBox(
+                      const CircularProgressIndicator()
+                          : SizedBox(
                         width: 200.0,
                         height: 50.0,
                         child: ElevatedButton(
@@ -177,11 +181,6 @@ class _LoginPageState extends State<LoginPage> {
                                   password: _passwordTextController.text,
 
                                 );
-                                // final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                                //   email: email,
-                                //   password: password,
-                                //
-                                // );
 
                                 setState(() {
                                   _isProcessing = false;
@@ -197,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
 
                             },
                             style: ElevatedButton.styleFrom(
-                              shadowColor: Colors.lightBlueAccent,
+                              shadowColor: Color.fromARGB(255, 61, 61, 61),
                               elevation: 4.0,
                               backgroundColor: const Color.fromRGBO(64, 91, 159, 1),
                               shape: RoundedRectangleBorder(
@@ -219,7 +218,13 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           IconButton(
 
-                            onPressed: (){},
+                            onPressed: (){
+                              // Here goes Jorge's code
+
+                              final provider = Provider.of<GoogleSignInProvider>(context,listen: false);
+                              provider.googleLogin();
+
+                            },
                             icon: Image.asset('images/google.png'),
                             iconSize: 60,
                           ),
