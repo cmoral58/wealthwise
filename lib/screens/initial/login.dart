@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:wealthwise/screens/main/home.dart';
 import 'package:wealthwise/screens/main/dashboard.dart';
 import 'package:wealthwise/utils/fire_auth.dart';
 import 'package:wealthwise/utils/google_sign_in.dart';
 import 'package:wealthwise/utils/validator.dart';
 import '../../utils/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+/// Google Sign in function
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: <String>[
+    'email',
+  ],
+);
+
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -29,11 +38,41 @@ class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _password;
   User? user = FirebaseAuth.instance.currentUser;
 
+
+  // User? newGoogleUser= GoogleSignInProvider().user as User?;
+
+  /// trying this for google auth
+  GoogleSignInAccount? _currentUser;
+  String _contactText = '';
+
+  Future<void> _handleSignIn() async {
+    try {
+      await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future<void> _handleSignOut() => _googleSignIn.disconnect();
+
+
+
+
   @override
   void initState() {
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+      setState(() {
+        _currentUser = account;
+      });
+      if(_currentUser != null) {
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) => Dashboard(user: user, googleUser: _currentUser!,)));
+      }
+    });
+    _googleSignIn.signInSilently();
   }
   // dispose method used to release the memory allocated to variables when state object is removed.
   // avoid memory leakage warning later on
@@ -46,6 +85,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final GoogleSignInAccount? googleUser = _currentUser;
     return Scaffold(
       /// Allows for transparency
       extendBodyBehindAppBar: true,
@@ -218,11 +258,12 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           IconButton(
 
-                            onPressed: (){
+                            onPressed: () async {
                               // Here goes Jorge's code
 
                               final provider = Provider.of<GoogleSignInProvider>(context,listen: false);
                               provider.googleLogin();
+                              _handleSignIn();
 
                             },
                             icon: Image.asset('images/google.png'),
