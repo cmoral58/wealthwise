@@ -39,22 +39,6 @@ class _LoginPageState extends State<LoginPage> {
   User? user = FirebaseAuth.instance.currentUser;
 
 
-  // User? newGoogleUser= GoogleSignInProvider().user as User?;
-
-  /// trying this for google auth
-  GoogleSignInAccount? _currentUser;
-  String _contactText = '';
-
-  Future<void> _handleSignIn() async {
-    try {
-      await _googleSignIn.signIn();
-    } catch (error) {
-      print(error);
-    }
-  }
-
-  Future<void> _handleSignOut() => _googleSignIn.disconnect();
-
 
 
 
@@ -63,16 +47,6 @@ class _LoginPageState extends State<LoginPage> {
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-      setState(() {
-        _currentUser = account;
-      });
-      if(_currentUser != null) {
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) => Dashboard(user: user, googleUser: _currentUser!,)));
-      }
-    });
-    _googleSignIn.signInSilently();
   }
   // dispose method used to release the memory allocated to variables when state object is removed.
   // avoid memory leakage warning later on
@@ -85,7 +59,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final GoogleSignInAccount? googleUser = _currentUser;
     return Scaffold(
       /// Allows for transparency
       extendBodyBehindAppBar: true,
@@ -260,10 +233,9 @@ class _LoginPageState extends State<LoginPage> {
 
                             onPressed: () async {
                               // Here goes Jorge's code
+                              // it has been shortened down to fix the bug issues
+                              signInWithGoogle();
 
-                              final provider = Provider.of<GoogleSignInProvider>(context,listen: false);
-                              provider.googleLogin();
-                              _handleSignIn();
 
                             },
                             icon: Image.asset('images/google.png'),
@@ -290,5 +262,22 @@ class _LoginPageState extends State<LoginPage> {
         },
       ),
     );
+
+  }
+  signInWithGoogle() async {
+    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    print(userCredential.user?.displayName);
+
+    if(userCredential.user != null) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => Dashboard(user: userCredential.user),
+      ));
+    }
   }
 }

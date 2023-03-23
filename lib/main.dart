@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:wealthwise/screens/main/dashboard.dart';
 import 'package:wealthwise/utils/google_sign_in.dart';
 import 'utils/firebase_options.dart';
 import 'screens/initial/welcome.dart';
@@ -35,7 +37,22 @@ class MyApp extends StatelessWidget {
         ),
         // HomePage is in welcome.dart file
         // cleans up the main file
-        home: const WelcomePage(),
+        // home: const WelcomePage(),
+        home: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (BuildContext context, AsyncSnapshot snapshot){
+            if(snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            }
+
+            if(snapshot.data == null) {
+              return const WelcomePage();
+            }
+            else {
+              return Dashboard(user: FirebaseAuth.instance.currentUser!);
+            }
+          },
+        ),
         // removes debug banner from app bar
         debugShowCheckedModeBanner: false,
       )
