@@ -267,10 +267,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
-                            onPressed: () {
-                              /// calling the _handleButtonTap() function instead of the signInWithGoogle();
-                              _handleButtonTap();
-                            },
+                            // Here goes Jorge's code
+                            // it has been shortened down to fix the bug issues
+                            /// the onPressed value may be changed later to async, in case any errors come up
+                            /// calling the _handleButtonTap() function instead of the signInWithGoogle();
+                            onPressed: _isButtonDisabled ? null : _handleButtonTap,
                             icon: Image.asset('images/google.png'),
                             iconSize: 60,
                           ),
