@@ -10,6 +10,8 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
+  
+
   @override
   void initState() {
     _currentUser = widget.user;
@@ -24,10 +26,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Calendar Screen'),
+        centerTitle: true,
       ),
-      body: Column(children: const [
-        Text('This is calendar page')
-      ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Text('Calendar page')
+          ],
+        ),
       ),
     );
   }

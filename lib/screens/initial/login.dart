@@ -38,9 +38,14 @@ class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _password;
   User? user = FirebaseAuth.instance.currentUser;
 
-
-
-
+  /// handles button press
+  bool _isButtonDisabled = false;
+  void _handleButtonTap() {
+    setState(() {
+      _isButtonDisabled = true;
+    });
+    signInWithGoogle();
+  }
 
   @override
   void initState() {
@@ -234,7 +239,8 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () async {
                               // Here goes Jorge's code
                               // it has been shortened down to fix the bug issues
-                              signInWithGoogle();
+                              /// calling the _handleButtonTap() function instead of the signInWithGoogle();
+                              _handleButtonTap();
 
 
                             },
@@ -264,7 +270,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
   }
-  signInWithGoogle() async {
+  Future<void> signInWithGoogle() async {
     GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
     AuthCredential credential = GoogleAuthProvider.credential(

@@ -29,6 +29,15 @@ class _RegisterPageState extends State<RegisterPage> {
   /// BOOL variable to determine whether the user is signed in (true) or not (false)
   bool _isProcessing = false;
 
+  /// handles button press
+  bool _isButtonDisabled = false;
+  void _handleButtonTap() {
+    setState(() {
+      _isButtonDisabled = true;
+    });
+    signInWithGoogle();
+  }
+
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -259,7 +268,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              signInWithGoogle();
+                              /// calling the _handleButtonTap() function instead of the signInWithGoogle();
+                              _handleButtonTap();
                             },
                             icon: Image.asset('images/google.png'),
                             iconSize: 60,
@@ -285,7 +295,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-  signInWithGoogle() async {
+  Future<void>signInWithGoogle() async {
     GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
     AuthCredential credential = GoogleAuthProvider.credential(

@@ -44,6 +44,7 @@ dependencies:
   google_sign_in: ^6.0.2
   provider: ^5.0.0
   gsheets: ^0.4.2
+  syncfusion_flutter_calendar: ^21.1.35
 
 dev_dependencies:
   flutter_test:
