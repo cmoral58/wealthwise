@@ -24,16 +24,12 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  bool _isSigningOut = false;
   late User _currentUser;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   title: const Text('Home Screen'),
-        // ),
-        body: Container(
+        body: SizedBox(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: ListView(
@@ -49,12 +45,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                 ),
               ),
-              Container(
+              SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: Column(
                   children: [
                     Row(
-                      children: [
+                      children: const [
                         /// title, description, icon, titleAlignment, descriptionAlignment, iconAlignment, titleStyle, descriptionStyle
                         CardItem('Cash', '\$ 1934.65', Icons.attach_money, Alignment.bottomLeft, Alignment.bottomLeft, Alignment.bottomLeft, titleStyle, descriptionStyle),
                         CardItem('', 'Add User', Icons.add_circle_outline_outlined, Alignment.center, Alignment.bottomCenter, Alignment.bottomLeft, titleStyle, descriptionStyle),
@@ -74,21 +70,21 @@ class _HomePageState extends State<HomePage> {
 /// Custom card items
 
 class CardItem extends StatelessWidget {
-  String title;
-  String description;
-  IconData iconData;
-  Alignment titleAlignment;
-  Alignment descriptionAlignment;
-  Alignment iconAlignment;
-  TextStyle titleStyle;
-  TextStyle descriptionStyle;
-  CardItem(this.title, this.description, this.iconData, this.titleAlignment, this.descriptionAlignment, this.iconAlignment, this.titleStyle ,this.descriptionStyle, {super.key});
+  final String title;
+  final String description;
+  final IconData iconData;
+  final Alignment titleAlignment;
+  final Alignment descriptionAlignment;
+  final Alignment iconAlignment;
+  final TextStyle titleStyle;
+  final TextStyle descriptionStyle;
+  const CardItem(this.title, this.description, this.iconData, this.titleAlignment, this.descriptionAlignment, this.iconAlignment, this.titleStyle ,this.descriptionStyle, {super.key});
 
   @override
   Widget build(BuildContext context) {
 
     return Container(
-      height: 150,
+      height: MediaQuery.of(context).size.height / 5.5,
       width: MediaQuery.of(context).size.width / 2 - 40, // - 40 due to margin and padding
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(20),
@@ -140,21 +136,21 @@ class CardItem extends StatelessWidget {
 }
 
 class CalendarCard extends StatelessWidget {
-  String title;
-  String description;
-  IconData iconData;
-  Alignment titleAlignment;
-  Alignment descriptionAlignment;
-  Alignment iconAlignment;
-  TextStyle titleStyle;
-  TextStyle descriptionStyle;
-  CalendarCard(this.title, this.description, this.iconData, this.titleAlignment, this.descriptionAlignment, this.iconAlignment, this.titleStyle ,this.descriptionStyle, {super.key});
+  final String title;
+  final String description;
+  final IconData iconData;
+  final Alignment titleAlignment;
+  final Alignment descriptionAlignment;
+  final Alignment iconAlignment;
+  final TextStyle titleStyle;
+  final TextStyle descriptionStyle;
+  const CalendarCard(this.title, this.description, this.iconData, this.titleAlignment, this.descriptionAlignment, this.iconAlignment, this.titleStyle ,this.descriptionStyle, {super.key});
 
   @override
   Widget build(BuildContext context) {
 
     return Container(
-      height: 100,
+      height: MediaQuery.of(context).size.height / 8,
       width: MediaQuery.of(context).size.width, // - 40 due to margin and padding
       margin: const EdgeInsets.only(left: 20.0, bottom: 10.0, right: 20.0),
       padding: const EdgeInsets.only(left: 20.0, bottom: 10.0, right: 20.0),

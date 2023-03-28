@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -80,8 +81,8 @@ class _LoginPageState extends State<LoginPage> {
                   key: _formkey,
                   child: Column(
                     children: [
-                      const SizedBox(
-                        height: 100.0,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 10,
                       ),
                       Image.asset(
                         'images/logo.png',
@@ -89,12 +90,12 @@ class _LoginPageState extends State<LoginPage> {
                       Image.asset(
                         'images/save.png',
                       ),
-                      const SizedBox(
-                        height: 30.0,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 40,
                       ),
                       Center(
                         child: SizedBox(
-                          width: 300.0,
+                          width: MediaQuery.of(context).size.height / 3,
                           child: TextFormField(
                             controller: _emailTextController,
                             focusNode: _focusEmail,
@@ -132,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       SizedBox(
-                        width: 300.0,
+                        width: MediaQuery.of(context).size.height / 3,
                         child: TextFormField(
                           controller: _passwordTextController,
                           focusNode: _focusPassword,
@@ -168,8 +169,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 80.0,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 6,
                       ),
                       _isProcessing ?
                       const CircularProgressIndicator()
@@ -205,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
 
                             },
                             style: ElevatedButton.styleFrom(
-                              shadowColor: Color.fromARGB(255, 61, 61, 61),
+                              shadowColor: const Color.fromARGB(255, 61, 61, 61),
                               elevation: 4.0,
                               backgroundColor: const Color.fromRGBO(64, 91, 159, 1),
                               shape: RoundedRectangleBorder(
@@ -216,8 +217,8 @@ class _LoginPageState extends State<LoginPage> {
                             child: const Text('Log In')),
                       ),
 
-                      const SizedBox(
-                        height: 30.0,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 40,
                       ),
 
                       // TODO: configure google and apple sign in with firebase (login page)
@@ -266,7 +267,9 @@ class _LoginPageState extends State<LoginPage> {
       idToken: googleAuth?.idToken,
     );
     UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-    print(userCredential.user?.displayName);
+    if (kDebugMode) {
+      print(userCredential.user?.displayName);
+    }
 
     if(userCredential.user != null) {
       Navigator.of(context).push(MaterialPageRoute(

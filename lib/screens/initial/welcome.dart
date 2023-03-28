@@ -13,9 +13,9 @@ class WelcomePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(
-              width: double.infinity,
-              height: 50.0,
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 20,
             ),
             CarouselSlider(
                 items: [
@@ -31,7 +31,7 @@ class WelcomePage extends StatelessWidget {
                           ],
                           colors: [
                             Colors.lightBlue.shade100,
-                            Color.fromRGBO(242, 249, 255, 1),
+                            const Color.fromRGBO(242, 249, 255, 1),
                           ],
                         ),
                       borderRadius: BorderRadius.circular(10.0),
@@ -53,7 +53,7 @@ class WelcomePage extends StatelessWidget {
                           ],
                           colors: [
                             Colors.lightBlue.shade100,
-                            Color.fromRGBO(242, 249, 255, 1),
+                            const Color.fromRGBO(242, 249, 255, 1),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(10.0),
@@ -75,7 +75,7 @@ class WelcomePage extends StatelessWidget {
                           ],
                           colors: [
                             Colors.lightBlue.shade100,
-                            Color.fromRGBO(242, 249, 255, 1),
+                            const Color.fromRGBO(242, 249, 255, 1),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(10.0),
@@ -87,7 +87,7 @@ class WelcomePage extends StatelessWidget {
                   ),
                 ], 
                 options: CarouselOptions(
-                  height: 420.0,
+                  height: MediaQuery.of(context).size.height / 2,
                   enlargeCenterPage: true,
                   autoPlay: true,
                   aspectRatio: 16/9,
@@ -97,9 +97,9 @@ class WelcomePage extends StatelessWidget {
                   viewportFraction: 0.9,
                 ),
             ),
-            const SizedBox(
-              width: double.infinity,
-              height: 20.0,
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 40,
             ),
             const Text('Budget. Track. Remind',
               style: TextStyle(
@@ -110,9 +110,9 @@ class WelcomePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(
-              width: double.infinity,
-              height: 10.0,
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 80,
             ),
             const Text("it's time to wise up",
               style: TextStyle(
@@ -124,14 +124,14 @@ class WelcomePage extends StatelessWidget {
                 fontSize: 10.0,
               ),
             ),
-            const SizedBox(
-              width: double.infinity,
-              height: 200.0,
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 5,
             ),
             Center(
               child: SizedBox(
-                width: 200.0,
-                height: 50.0,
+                width: MediaQuery.of(context).size.width / 2,
+                height: MediaQuery.of(context).size.height / 15,
                 // Directionality allows for the placement of the arrow to be on the right side
                 child: Directionality(
                   // text direction right to left

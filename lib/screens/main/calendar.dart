@@ -30,7 +30,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
       body: SafeArea(
         child: Column(
-          children: [
+          children: const [
             Text('Calendar page')
           ],
         ),

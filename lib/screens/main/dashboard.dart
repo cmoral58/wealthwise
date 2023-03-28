@@ -24,7 +24,7 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
   }
 
-  bool _isSigningOut = false;
+  final bool _isSigningOut = false;
   late User _currentUser;
   late GoogleSignInAccount _googleUser;
 
@@ -67,25 +67,25 @@ class _DashboardState extends State<Dashboard> {
             items: [
                 /// Home
                 DotNavigationBarItem(
-                icon: Icon(Icons.home),
+                icon: const Icon(Icons.home),
                 selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 
                 /// Planning
                 DotNavigationBarItem(
-                icon: Icon(Icons.event_note),
+                icon: const Icon(Icons.event_note),
                 selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 
                 /// Calendar
                 DotNavigationBarItem(
-                icon: Icon(Icons.calendar_month),
+                icon: const Icon(Icons.calendar_month),
                 selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 
                 /// Settings
                 DotNavigationBarItem(
-                  icon: Icon(Icons.settings),
+                  icon: const Icon(Icons.settings),
                   selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 

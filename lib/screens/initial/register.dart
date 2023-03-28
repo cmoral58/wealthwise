@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -83,8 +84,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   key: _registerFormKey,
                   child: Column(
                     children: [
-                      const SizedBox(
-                        height: 100.0,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 10,
                       ),
 
                       Image.asset(
@@ -100,7 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
 
                       SizedBox(
-                        width: 300.0,
+                        width: MediaQuery.of(context).size.height / 3,
                         child: TextFormField(
                           controller: _nameTextController,
                           focusNode: _focusName,
@@ -138,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                       Center(
                         child: SizedBox(
-                          width: 300.0,
+                          width: MediaQuery.of(context).size.height / 3,
                           child: TextFormField(
                             controller: _emailTextController,
                             focusNode: _focusEmail,
@@ -176,7 +177,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       SizedBox(
-                        width: 300.0,
+                        width: MediaQuery.of(context).size.height / 3,
                         child: TextFormField(
                           controller: _passwordTextController,
                           focusNode: _focusPassword,
@@ -212,8 +213,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 60.0,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 10,
                       ),
                       _isProcessing
                       ? const CircularProgressIndicator()
@@ -257,8 +258,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             child: const Text('Register'),),
                       ),
-                      const SizedBox(
-                        height: 30.0,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 40,
                       ),
 
                       // TODO: configure google and apple sign in with firebase (register page)
@@ -304,7 +305,9 @@ class _RegisterPageState extends State<RegisterPage> {
       idToken: googleAuth?.idToken,
     );
     UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-    print(userCredential.user?.displayName);
+    if (kDebugMode) {
+      print(userCredential.user?.displayName);
+    }
 
     if(userCredential.user != null) {
       Navigator.of(context).push(MaterialPageRoute(
