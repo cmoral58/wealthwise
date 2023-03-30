@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "972334264189-4tljv82dlkum7l6ukcflt0vhmetgff6m.apps.googleusercontent.com",
+          "client_id": "972334264189-1qncmab6jia5sg2tkso4ishsvlpjbdci.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wealthwise",
+            "certificate_hash": "189b235777ae616224bee82203c24b8a1e588b13"
+          }
+        },
+        {
+          "client_id": "972334264189-dk18pvl00aup9t6131lqr200kcvaue6l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

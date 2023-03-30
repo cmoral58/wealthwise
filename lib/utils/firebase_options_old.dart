@@ -66,7 +66,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '972334264189',
     projectId: 'wealthwise-prototype',
     storageBucket: 'wealthwise-prototype.appspot.com',
-    androidClientId: '972334264189-1qncmab6jia5sg2tkso4ishsvlpjbdci.apps.googleusercontent.com',
     iosClientId: '972334264189-g7iju49i12uucff39sv3723953214ujt.apps.googleusercontent.com',
     iosBundleId: 'com.example.wealthwise',
   );
@@ -77,7 +76,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '972334264189',
     projectId: 'wealthwise-prototype',
     storageBucket: 'wealthwise-prototype.appspot.com',
-    androidClientId: '972334264189-1qncmab6jia5sg2tkso4ishsvlpjbdci.apps.googleusercontent.com',
     iosClientId: '972334264189-g7iju49i12uucff39sv3723953214ujt.apps.googleusercontent.com',
     iosBundleId: 'com.example.wealthwise',
   );
