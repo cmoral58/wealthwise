@@ -53,10 +53,13 @@ dependencies:
   flutter_svg: ^2.0.4
   flutter_riverpod: ^2.3.2
   intl: ^0.17.0
+  calendar_view: ^1.0.2
   table_calendar: ^3.0.8
   cloud_firestore: ^4.4.5
   firebase_database: ^10.0.16
   shared_preferences: ^2.0.20
+  syncfusion_flutter_charts: ^21.1.37
+
 
 
 dev_dependencies:

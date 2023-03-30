@@ -1,188 +1,302 @@
-import 'dart:collection';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:wealthwise/screens/main/calendarClasses/addEvent.dart';
-import 'calendarClasses/editEvent.dart';
-import 'calendarClasses/event.dart';
-import 'calendarClasses/eventItem.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'editEvent.dart';
 
 class CalendarScreen extends StatefulWidget {
+  final String userId;
   final User user;
-  const CalendarScreen({super.key, required this.user});
+
+  const CalendarScreen({Key? key, required this.userId, required this.user}) : super(key: key);
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
+  late CalendarFormat _calendarFormat = CalendarFormat.month;
   late DateTime _focusedDay;
-  late DateTime _firstDay;
-  late DateTime _lastDay;
   late DateTime _selectedDay;
-  late CalendarFormat _calendarFormat;
-  late Map<DateTime, List<Event>> _events;
-
-  late List<dynamic> _selectedEvents;
-
-  int getHashCode(DateTime key) {
-    return key.day * 1000000 + key.month * 10000 + key.year;
-  }
+  late final DateTime _firstDay = DateTime(DateTime.now().year - 1, 1, 1);
+  late final DateTime _lastDay = DateTime(DateTime.now().year + 1, 12, 31);
 
   @override
   void initState() {
     super.initState();
-    _currentUser = widget.user;
-    _events = LinkedHashMap(
-      equals: isSameDay,
-      hashCode: getHashCode,
-    );
-    _selectedDay = DateTime.now();
     _focusedDay = DateTime.now();
-    _firstDay = DateTime.now().subtract(const Duration(days: 1000));
-    _lastDay = DateTime.now().add(const Duration(days: 1000));
-    _calendarFormat = CalendarFormat.month;
-    _loadFirestoreEvents();
-    _events = {};
-    _selectedEvents = [];
-
+    _selectedDay = DateTime.now();
   }
 
-  _loadFirestoreEvents() async {
-    final firstDay = DateTime(_focusedDay.year, _focusedDay.month, 1);
-    final lastDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 0);
-    _events = {};
+  Map<DateTime, List<dynamic>> _events = {};
 
-    final snap = await FirebaseFirestore.instance
+  Future<Map<DateTime, List<dynamic>>> getEvents() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('events')
-        .where('date', isGreaterThanOrEqualTo: firstDay)
-        .where('date', isLessThanOrEqualTo: lastDay)
-        .withConverter(
-        fromFirestore: Event.fromFirestore,
-        toFirestore: (event, options) => event.toFirestore())
+        .doc(widget.userId)
+        .collection('userEvents')
         .get();
-    for (var doc in snap.docs) {
-      final event = doc.data();
-      final day =
-      DateTime.utc(event.date.year, event.date.month, event.date.day);
-      if (_events[day] == null) {
-        _events[day] = [];
+
+    Map<DateTime, List<dynamic>> events = {};
+
+    querySnapshot.docs.forEach((doc) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      DateTime date = DateTime.parse(data['date'].toDate().toString());
+      if (events[date] == null) {
+        events[date] = [];
       }
-      _events[day]!.add(event);
-    }
-    setState(() {});
+      events[date]!.add(data);
+    });
+
+    return events;
   }
 
-  List<Event> _getEventsForTheDay(DateTime day) {
-    return _events[day] ?? [];
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    setState(() {
+      _selectedDay = selectedDay;
+      _focusedDay = focusedDay;
+    });
   }
 
-  late User _currentUser;
+  Widget _buildEventList() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('events')
+          .doc(widget.userId)
+          .collection('userEvents')
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return const CircularProgressIndicator();
+        }
 
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: snapshot.data!.docs.length,
+          itemBuilder: (BuildContext context, int index) {
+            Map<String, dynamic> data =
+            snapshot.data!.docs[index].data() as Map<String, dynamic>;
+            DateTime date = DateTime.parse(data['date'].toDate().toString());
+
+            if (date.year == _selectedDay.year &&
+                date.month == _selectedDay.month &&
+                date.day == _selectedDay.day) {
+              return Card(
+                child: ListTile(
+                  title: Text(data['title']),
+                  subtitle: Text(data['description']),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditEventScreen(
+                                userId: widget.userId,
+                                eventId: snapshot.data!.docs[index].id,
+                                user: widget.user,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          FirebaseFirestore.instance
+                              .collection('events')
+                              .doc(widget.userId)
+                              .collection('userEvents')
+                              .doc(snapshot.data!.docs[index].id)
+                              .delete();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            } else {
+              return Container();
+            }
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          TableCalendar(
-            eventLoader: _getEventsForTheDay,
-            calendarFormat: _calendarFormat,
-            onFormatChanged: (format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            },
-            focusedDay: _focusedDay,
-            firstDay: _firstDay,
-            lastDay: _lastDay,
-            onPageChanged: (focusedDay) {
-              setState(() {
-                _focusedDay = focusedDay;
-              });
-              _loadFirestoreEvents();
-            },
-            selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
-            onDaySelected: (selectedDay, focusedDay) {
-              print(_events[selectedDay]);
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-            },
-          ),
-          ..._getEventsForTheDay(_selectedDay).map(
-                (event) => EventItem(
-                event: event,
-                onTap: () async {
-                  final res = await Navigator.push<bool>(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => EditEvent(
-                          firstDate: _firstDay,
-                          lastDate: _lastDay,
-                          event: event),
-                    ),
-                  );
-                  if (res ?? false) {
-                    _loadFirestoreEvents();
-                  }
+      appBar: AppBar(
+        title: const Text('Calendar'),
+      ),
+      body: FutureBuilder<Map<DateTime, List<dynamic>>>(
+        future: getEvents(),
+        builder: (BuildContext context,
+            AsyncSnapshot<Map<DateTime, List<dynamic>>> snapshot) {
+          if (snapshot.hasData) {
+            _events = snapshot.data!;
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TableCalendar(
+                firstDay: _firstDay,
+                lastDay: _lastDay,
+                focusedDay: _focusedDay,
+                calendarFormat: _calendarFormat,
+                onFormatChanged: (format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
                 },
-                onDelete: () async {
-                  final delete = await showDialog<bool>(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text("Delete Event?"),
-                      content: const Text("Are you sure you want to delete?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
+                selectedDayPredicate: (DateTime date) {
+                  return isSameDay(_selectedDay, date);
+                },
+                onDaySelected: _onDaySelected,
+                eventLoader: (DateTime date) {
+                  // return _events[date] as List;
+                  return _events[date]?.toList() ?? [];
+                },
+                calendarStyle: const CalendarStyle(
+                  todayDecoration: BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                  selectedDecoration: BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                calendarBuilders: CalendarBuilders(
+                  markerBuilder: (BuildContext context, DateTime date,
+                      List<dynamic> events) {
+                    if (events.isNotEmpty) {
+                      return Stack(
+                        children: [
+                          Positioned(
+                            right: 1,
+                            bottom: 1,
+                            child: _buildMarker(date, events.length),
                           ),
-                          child: const Text("No"),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.red,
-                          ),
-                          child: const Text("Yes"),
-                        ),
-                      ],
-                    ),
-                  );
-                  if (delete ?? false) {
-                    await FirebaseFirestore.instance
-                        .collection('events')
-                        .doc(event.id)
-                        .delete();
-                    _loadFirestoreEvents();
-                  }
-                }),
-          ),
-        ],
+                        ],
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
+              ),
+              Expanded(child: _buildEventList()),
+            ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final result = await Navigator.push<bool>(
-            context,
-            MaterialPageRoute(
-              builder: (_) => AddEvent(
-                firstDate: _firstDay,
-                lastDate: _lastDay,
-                selectedDate: _selectedDay,
-              ),
-            ),
-          );
-          if (result ?? false) {
-            _loadFirestoreEvents();
-          }
-        },
         child: const Icon(Icons.add),
+        onPressed: () async {
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              DateTime _eventDate = DateTime.now();
+              String _eventTitle = '';
+              String _eventDescription = '';
+              return AlertDialog(
+                title: const Text('Add Event'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: 'Date',
+                        ),
+                        onTap: () async {
+                          DateTime? selectedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2021),
+                            lastDate: DateTime(2030),
+                          );
+                          if (selectedDate != null) {
+                            _eventDate = selectedDate;
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: 'Title',
+                        ),
+                        onChanged: (value) {
+                          _eventTitle = value;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: 'Description',
+                        ),
+                        onChanged: (value) {
+                          _eventDescription = value;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: const Text('Cancel'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('Save'),
+                    onPressed: () {
+                      FirebaseFirestore.instance
+                          .collection('events')
+                          .doc(widget.userId)
+                          .collection('userEvents')
+                          .add({
+                        'date': _eventDate,
+                        'title': _eventTitle,
+                        'description': _eventDescription,
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildMarker(DateTime date, int count) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.blue[400],
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      width: 20.0,
+      height: 20.0,
+      child: Center(
+        child: Text(
+          '$count',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 12.0,
+          ),
+        ),
       ),
     );
   }

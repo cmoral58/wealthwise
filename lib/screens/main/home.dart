@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
 class HomePage extends StatefulWidget {
   final User user;
   const HomePage({super.key, required this.user});
@@ -11,7 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   DateTime today = DateTime.now();
   static const TextStyle lightStyle = TextStyle(fontWeight: FontWeight.bold, color: Color.fromRGBO(111, 146, 240, 1), fontSize: 25.0, fontFamily: 'Montserrat');
   static const TextStyle darkStyle = TextStyle(fontWeight: FontWeight.bold, color: Color.fromRGBO(64, 91, 159, 1), fontSize: 25.0, fontFamily: 'Montserrat');
@@ -23,6 +21,8 @@ class _HomePageState extends State<HomePage> {
     _currentUser = widget.user;
     super.initState();
   }
+
+
 
   late User _currentUser;
 
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height,
-                child: Column(
+                child: ListView(
                   children: [
                     Row(
                       children: const [
@@ -56,7 +56,6 @@ class _HomePageState extends State<HomePage> {
                         CardItem('', 'Add User', Icons.add_circle_outline_outlined, Alignment.center, Alignment.bottomCenter, Alignment.bottomLeft, titleStyle, descriptionStyle),
                       ],
                     ),
-                    CalendarCard('${today.day}, ${today.year}', 'No events for today', Icons.calendar_month, Alignment.topLeft, Alignment.centerLeft, Alignment.centerLeft, titleStyle, descriptionStyle)
                   ],
                 ),
               )

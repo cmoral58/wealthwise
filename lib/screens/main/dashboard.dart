@@ -7,6 +7,8 @@ import 'package:wealthwise/screens/main/calendar.dart';
 import 'package:wealthwise/screens/main/planning.dart';
 import 'package:wealthwise/screens/main/settings.dart';
 
+import 'chartScreen.dart';
+
 
 class Dashboard extends StatefulWidget {
   final User? user;
@@ -27,13 +29,15 @@ class _DashboardState extends State<Dashboard> {
   final bool _isSigningOut = false;
   late User _currentUser;
   late GoogleSignInAccount _googleUser;
+  late String userId = _currentUser!.uid;
 
   int _selectedIndex = 0;
   // navigation indexes for bottomNavigationBar
   late final List<Widget> _pages = [
     HomePage(user: _currentUser),
-    PlanningScreen(user: _currentUser),
-    CalendarScreen(user: _currentUser),
+    // PlanningScreen(user: _currentUser),
+    ChartScreen(user: _currentUser, userId: userId),
+    CalendarScreen(user: _currentUser, userId: userId,),
     SettingsPage(user: _currentUser),
   ];
 
