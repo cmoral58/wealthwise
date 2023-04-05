@@ -131,6 +131,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         title: const Text('Calendar'),
       ),
@@ -165,11 +166,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 },
                 calendarStyle: const CalendarStyle(
                   todayDecoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Color.fromARGB(255, 128, 128, 128),
                     shape: BoxShape.circle,
                   ),
                   selectedDecoration: BoxDecoration(
-                    color: Colors.green,
+                    color: Color.fromARGB(255, 0, 0, 0),
                     shape: BoxShape.circle,
                   ),
                 ),

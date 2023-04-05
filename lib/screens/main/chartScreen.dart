@@ -89,6 +89,7 @@ class _ChartScreenState extends State<ChartScreen> {
         }).toList();
 
         return Scaffold(
+          backgroundColor: Colors.grey[300],
           appBar: AppBar(
             title: const Text('Chart Screen'),
           ),
