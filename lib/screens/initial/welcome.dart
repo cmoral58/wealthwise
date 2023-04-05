@@ -138,8 +138,9 @@ class WelcomePage extends StatelessWidget {
                   textDirection: TextDirection.rtl,
                   child: ElevatedButton.icon(
                     icon: const Icon(
-                        Icons.arrow_back,
-                        size: 15.0,
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 15.0,
                     ),
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPage()),
@@ -155,9 +156,10 @@ class WelcomePage extends StatelessWidget {
                       ),
                     ),
                     label: const Text('Get Started ',
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.bold,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),

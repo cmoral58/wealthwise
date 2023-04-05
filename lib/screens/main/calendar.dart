@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'editEvent.dart';
+import 'calendarUtils/editEvent.dart';
 
 class CalendarScreen extends StatefulWidget {
   final String userId;
   final User user;
 
-  const CalendarScreen({Key? key, required this.userId, required this.user}) : super(key: key);
+  const CalendarScreen({Key? key, required this.userId, required this.user})
+      : super(key: key);
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
@@ -76,7 +77,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (BuildContext context, int index) {
             Map<String, dynamic> data =
-            snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                snapshot.data!.docs[index].data() as Map<String, dynamic>;
             DateTime date = DateTime.parse(data['date'].toDate().toString());
 
             if (date.year == _selectedDay.year &&
@@ -133,7 +134,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        title: const Text('Calendar'),
+        title: const Text(
+          'Calendar',
+        ),
       ),
       body: FutureBuilder<Map<DateTime, List<dynamic>>>(
         future: getEvents(),
@@ -147,15 +150,38 @@ class _CalendarScreenState extends State<CalendarScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TableCalendar(
+                headerStyle: const HeaderStyle(
+                  titleCentered: true,
+                  formatButtonVisible: false,
+                  titleTextStyle: TextStyle(
+                    fontSize: 17,
+                    color: Colors.black,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                daysOfWeekStyle: const  DaysOfWeekStyle(
+                  weekdayStyle: TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.bold,
+                  ),
+                  weekendStyle: TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 firstDay: _firstDay,
                 lastDay: _lastDay,
                 focusedDay: _focusedDay,
-                calendarFormat: _calendarFormat,
-                onFormatChanged: (format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                },
+                // calendarFormat: _calendarFormat,
+                calendarFormat: CalendarFormat.week,
+                // onFormatChanged: (format) {
+                //   setState(() {
+                //     _calendarFormat = format;
+                //   });
+                // },
                 selectedDayPredicate: (DateTime date) {
                   return isSameDay(_selectedDay, date);
                 },
@@ -165,12 +191,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   return _events[date]?.toList() ?? [];
                 },
                 calendarStyle: const CalendarStyle(
+                  defaultTextStyle: TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.bold,
+                  ),
+                  todayTextStyle: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.bold,
+                  ),
                   todayDecoration: BoxDecoration(
-                    color: Color.fromARGB(255, 128, 128, 128),
+                    color: Color.fromRGBO(150, 177, 253, 1.0),
                     shape: BoxShape.circle,
                   ),
                   selectedDecoration: BoxDecoration(
-                    color: Color.fromARGB(255, 0, 0, 0),
+                    color: Color.fromRGBO(64, 91, 159, 1),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -199,7 +235,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        backgroundColor: const Color.fromRGBO(64, 91, 159, 1),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         onPressed: () async {
           await showDialog(
             context: context,

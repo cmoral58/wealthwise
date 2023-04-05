@@ -256,7 +256,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                   side: const BorderSide(color: Color.fromRGBO(64, 91, 159, 1)),
                                 ),
                             ),
-                            child: const Text('Register'),),
+                            child: const Text(
+                              'Register',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height / 40,

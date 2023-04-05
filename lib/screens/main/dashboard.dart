@@ -7,9 +7,6 @@ import 'package:wealthwise/screens/main/calendar.dart';
 import 'package:wealthwise/screens/main/planning.dart';
 import 'package:wealthwise/screens/main/settings.dart';
 
-import 'chartScreen.dart';
-
-
 class Dashboard extends StatefulWidget {
   final User? user;
   final GoogleSignInAccount? googleUser;
@@ -35,8 +32,7 @@ class _DashboardState extends State<Dashboard> {
   // navigation indexes for bottomNavigationBar
   late final List<Widget> _pages = [
     HomePage(user: _currentUser),
-    // PlanningScreen(user: _currentUser),
-    ChartScreen(user: _currentUser, userId: userId),
+    PlanningScreen(user: _currentUser),
     CalendarScreen(user: _currentUser, userId: userId,),
     SettingsPage(user: _currentUser),
   ];
@@ -64,10 +60,10 @@ class _DashboardState extends State<Dashboard> {
             boxShadow: [
               BoxShadow(
                   color: Colors.grey.shade500,
-                  offset: Offset(4.0, 4.0),
+                  offset: const Offset(4.0, 4.0),
                   blurRadius: 15.0,
                   spreadRadius: 1.0),
-              BoxShadow(
+              const BoxShadow(
                   color: Colors.white,
                   offset: Offset(-4.0, -4.0),
                   blurRadius: 15.0,
@@ -79,25 +75,25 @@ class _DashboardState extends State<Dashboard> {
                 /// Home
                 DotNavigationBarItem(
                 icon: const Icon(Icons.home),
-                selectedColor: Colors.grey[800],
+                  selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 
                 /// Planning
                 DotNavigationBarItem(
                 icon: const Icon(Icons.event_note),
-                selectedColor: Colors.grey[800],
+                  selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 
                 /// Calendar
                 DotNavigationBarItem(
                 icon: const Icon(Icons.calendar_month),
-                selectedColor: Colors.grey[800],
+                  selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 
                 /// Settings
                 DotNavigationBarItem(
                   icon: const Icon(Icons.settings),
-                  selectedColor: Colors.grey[800],
+                  selectedColor: const Color.fromRGBO(64, 91, 159, 1),
                 ),
 
               ],

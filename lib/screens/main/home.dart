@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:wealthwise/screens/main/loading_circle.dart';
-import 'package:wealthwise/screens/main/plus_button.dart';
-import 'package:wealthwise/screens/main/top_card.dart';
-import 'package:wealthwise/screens/main/transaction.dart';
+import 'package:wealthwise/screens/main/homeUtils/loading_circle.dart';
+import 'package:wealthwise/screens/main/homeUtils/plus_button.dart';
+import 'package:wealthwise/screens/main/homeUtils/top_card.dart';
+import 'package:wealthwise/screens/main/homeUtils/transaction.dart';
 import 'package:wealthwise/utils/google_sheets_Api.dart';
 
 

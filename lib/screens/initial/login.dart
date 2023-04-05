@@ -214,7 +214,14 @@ class _LoginPageState extends State<LoginPage> {
                                 side: const BorderSide(color: Color.fromRGBO(64, 91, 159, 1)),
                               ),
                             ),
-                            child: const Text('Log In')),
+                            child: const Text(
+                              'Log In',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )),
                       ),
 
                       SizedBox(

@@ -36,12 +36,20 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             Text(
               'NAME: ${_currentUser.displayName}',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: const TextStyle(
+                color: Colors.black,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 16.0),
             Text(
               'EMAIL: ${_currentUser.email}',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: const TextStyle(
+                color: Colors.black,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.bold,
+              ),
             ),
 
             const SizedBox(height: 16.0),
@@ -66,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[300],
+                backgroundColor: Colors.white,
                 
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -74,7 +82,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               
               ),
-              child: const Text('Sign out'),
+              child: const Text(
+                'Sign out',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.w700
+                ),
+              ),
               
             ),
           ],
