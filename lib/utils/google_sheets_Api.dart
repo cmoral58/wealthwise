@@ -2,7 +2,7 @@ import 'package:gsheets/gsheets.dart';
 
 // Gsheets credentials
 class GoogleSheetsApi{
-  static const _credentials = r''''
+  static const _credentials = r'''
   {
   "type": "service_account",
   "project_id": "wealthwise-gsheets",
@@ -19,16 +19,93 @@ class GoogleSheetsApi{
 
   //set up and connect to the spreadsheet
 
-  static final _spreadsheetId = '1oZauq04wjyto8SQlK2hRj_vy4jdmbY5MfGgsFJIDWuw';
+  static const _spreadsheetId = '1oZauq04wjyto8SQlK2hRj_vy4jdmbY5MfGgsFJIDWuw';
   static final _gsheets = GSheets(_credentials);
   static Worksheet? _worksheet;
 
-  //initialize spreadsheet
-  Future init() async {
+  //some variables to keep track off..
+  static int numberOfTransactions = 0;
+  static List<List<dynamic>> currentTransactions = []; // List of current transactions
+  static bool loading = true; // to keep track of the loading process
 
+ // initialise the spreadsheet
+  Future init() async {
     final ss = await _gsheets.spreadsheet(_spreadsheetId);
     _worksheet = ss.worksheetByTitle('Worksheet1');
+    countRows();
   }
 
+  // count the number of notes
+  static Future countRows() async {
+    while ((await _worksheet!.values
+            .value(column: 1, row: numberOfTransactions + 1)) !=
+        '') {
+      numberOfTransactions++;
+    }
+    // now we know how many notes to load, now let's load them!
+    loadTransactions();
+  }
 
+  // load existing notes from the spreadsheet
+  static Future loadTransactions() async {
+    if (_worksheet == null) return;
+
+    for (int i = 1; i < numberOfTransactions; i++) {
+      final String transactionName =
+          await _worksheet!.values.value(column: 1, row: i + 1); //Store values in 1st column
+      final String transactionAmount =
+          await _worksheet!.values.value(column: 2, row: i + 1); //Store values in 2nd column
+      final String transactionType =
+          await _worksheet!.values.value(column: 3, row: i + 1); //Store values in 3rd column
+
+      if (currentTransactions.length < numberOfTransactions) { //Add input to current list of transactions
+        currentTransactions.add([
+          transactionName,
+          transactionAmount,
+          transactionType,
+        ]);
+      }
+    }
+    print(currentTransactions);
+    // this will stop the circular loading indicator
+    loading = false;
+  }
+
+  // insert a new transaction
+  static Future insert(String name, String amount, bool _isIncome) async {
+    if (_worksheet == null) return;
+    numberOfTransactions++;
+    currentTransactions.add([
+      name,
+      amount,
+      _isIncome == true ? 'income' : 'expense',
+    ]);
+    await _worksheet!.values.appendRow([
+      name,
+      amount,
+      _isIncome == true ? 'income' : 'expense',
+    ]);
+  }
+
+  // CALCULATE THE TOTAL INCOME!
+  static double calculateIncome() {
+    double totalIncome = 0;
+    for (int i = 0; i < currentTransactions.length; i++) {
+      if (currentTransactions[i][2] == 'income') {
+        totalIncome += double.parse(currentTransactions[i][1]);
+      }
+    }
+    return totalIncome;
+  }
+
+  // CALCULATE THE TOTAL EXPENSE!
+  static double calculateExpense() {
+    double totalExpense = 0;
+    for (int i = 0; i < currentTransactions.length; i++) {
+      if (currentTransactions[i][2] == 'expense') {
+        totalExpense += double.parse(currentTransactions[i][1]);
+      }
+    }
+    return totalExpense;
+  }
 }

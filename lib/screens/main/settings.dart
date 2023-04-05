@@ -26,6 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -65,16 +66,21 @@ class _SettingsPageState extends State<SettingsPage> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: Colors.grey[300],
+                
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
+                
                 ),
+              
               ),
               child: const Text('Sign out'),
+              
             ),
           ],
         ),
       ),
+      
     );
   }
 }

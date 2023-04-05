@@ -51,20 +51,27 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
       return Scaffold(
+        backgroundColor: Colors.grey[300],
         body: _pages[_selectedIndex],
 
           bottomNavigationBar: Padding(
-            padding: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.only(bottom: 3),
             child: DotNavigationBar(
             margin: const EdgeInsets.only(left: 10, right: 10),
             currentIndex: _selectedIndex,
-            dotIndicatorColor: Colors.white,
-            unselectedItemColor: Colors.grey[300],
-            boxShadow: const <BoxShadow>[
+            dotIndicatorColor: Colors.grey[350],
+            unselectedItemColor: Colors.grey[500],
+            boxShadow: [
               BoxShadow(
-                color: Colors.grey,
-                blurRadius: 5
-              )
+                  color: Colors.grey.shade500,
+                  offset: Offset(4.0, 4.0),
+                  blurRadius: 15.0,
+                  spreadRadius: 1.0),
+              BoxShadow(
+                  color: Colors.white,
+                  offset: Offset(-4.0, -4.0),
+                  blurRadius: 15.0,
+                  spreadRadius: 1.0),
             ],
             // enableFloatingNavBar: false,
             onTap: _onItemTapped,
@@ -72,25 +79,25 @@ class _DashboardState extends State<Dashboard> {
                 /// Home
                 DotNavigationBarItem(
                 icon: const Icon(Icons.home),
-                selectedColor: const Color.fromRGBO(64, 91, 159, 1),
+                selectedColor: Colors.grey[800],
                 ),
 
                 /// Planning
                 DotNavigationBarItem(
                 icon: const Icon(Icons.event_note),
-                selectedColor: const Color.fromRGBO(64, 91, 159, 1),
+                selectedColor: Colors.grey[800],
                 ),
 
                 /// Calendar
                 DotNavigationBarItem(
                 icon: const Icon(Icons.calendar_month),
-                selectedColor: const Color.fromRGBO(64, 91, 159, 1),
+                selectedColor: Colors.grey[800],
                 ),
 
                 /// Settings
                 DotNavigationBarItem(
                   icon: const Icon(Icons.settings),
-                  selectedColor: const Color.fromRGBO(64, 91, 159, 1),
+                  selectedColor: Colors.grey[800],
                 ),
 
               ],
