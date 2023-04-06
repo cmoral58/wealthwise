@@ -194,13 +194,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 firstDay: _firstDay,
                 lastDay: _lastDay,
                 focusedDay: _focusedDay,
-                // calendarFormat: _calendarFormat,
-                calendarFormat: CalendarFormat.week,
-                // onFormatChanged: (format) {
-                //   setState(() {
-                //     _calendarFormat = format;
-                //   });
-                // },
+                calendarFormat: _calendarFormat,
+                onFormatChanged: (format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                },
                 selectedDayPredicate: (DateTime date) {
                   return isSameDay(_selectedDay, date);
                 },
