@@ -171,7 +171,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               TableCalendar(
                 headerStyle: const HeaderStyle(
                   titleCentered: true,
-                  formatButtonVisible: false,
+                  formatButtonVisible: true,
                   titleTextStyle: TextStyle(
                     fontSize: 17,
                     color: Colors.black,
