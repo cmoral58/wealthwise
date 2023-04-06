@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'calendarUtils/editEvent.dart';
+import 'homeUtils/loading_circle.dart';
 
 class CalendarScreen extends StatefulWidget {
   final String userId;
@@ -23,11 +25,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
   late final DateTime _firstDay = DateTime(DateTime.now().year - 1, 1, 1);
   late final DateTime _lastDay = DateTime(DateTime.now().year + 1, 12, 31);
 
+  TextEditingController _textController = TextEditingController();
+  DateTime? _eventDate;
+
   @override
   void initState() {
     super.initState();
     _focusedDay = DateTime.now();
     _selectedDay = DateTime.now();
+    _textController.text = _eventDate != null ? DateFormat('yyyy-MM-dd').format(_eventDate!) : '';
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
   }
 
   Map<DateTime, List<dynamic>> _events = {};
@@ -69,7 +81,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) {
-          return const CircularProgressIndicator();
+          // return const CircularProgressIndicator();
+          return const LoadingCircle();
         }
 
         return ListView.builder(
@@ -83,40 +96,46 @@ class _CalendarScreenState extends State<CalendarScreen> {
             if (date.year == _selectedDay.year &&
                 date.month == _selectedDay.month &&
                 date.day == _selectedDay.day) {
-              return Card(
-                child: ListTile(
-                  title: Text(data['title']),
-                  subtitle: Text(data['description']),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditEventScreen(
-                                userId: widget.userId,
-                                eventId: snapshot.data!.docs[index].id,
-                                user: widget.user,
-                              ),
-                            ),
-                          );
-                        },
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 5),
+                  child: Card(
+                    child: ListTile(
+                      title: Text(data['title']),
+                      subtitle: Text(data['description']),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditEventScreen(
+                                    userId: widget.userId,
+                                    eventId: snapshot.data!.docs[index].id,
+                                    user: widget.user,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              FirebaseFirestore.instance
+                                  .collection('events')
+                                  .doc(widget.userId)
+                                  .collection('userEvents')
+                                  .doc(snapshot.data!.docs[index].id)
+                                  .delete();
+                            },
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          FirebaseFirestore.instance
-                              .collection('events')
-                              .doc(widget.userId)
-                              .collection('userEvents')
-                              .doc(snapshot.data!.docs[index].id)
-                              .delete();
-                        },
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               );
@@ -248,13 +267,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
               String _eventTitle = '';
               String _eventDescription = '';
               return AlertDialog(
-                title: const Text('Add Event'),
+                title: const Text('A D D  E V E N T'),
                 content: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextFormField(
+                        controller: _textController,
+                        readOnly: true,
                         decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                           hintText: 'Date',
                         ),
                         onTap: () async {
@@ -265,13 +287,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             lastDate: DateTime(2030),
                           );
                           if (selectedDate != null) {
-                            _eventDate = selectedDate;
+                            setState(() {
+                              _eventDate = selectedDate;
+                              _textController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+                            });
                           }
                         },
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
                         decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                           hintText: 'Title',
                         ),
                         onChanged: (value) {
@@ -281,6 +307,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       const SizedBox(height: 10),
                       TextFormField(
                         decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                           hintText: 'Description',
                         ),
                         onChanged: (value) {
@@ -291,14 +318,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   ),
                 ),
                 actions: [
-                  TextButton(
-                    child: const Text('Cancel'),
+                  MaterialButton(
+                    color: Colors.grey[600],
+                    child: const Text('Cancel', style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                   ),
-                  TextButton(
-                    child: const Text('Save'),
+                  MaterialButton(
+                    color: Colors.grey[600],
+                    child: const Text('Save', style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       FirebaseFirestore.instance
                           .collection('events')

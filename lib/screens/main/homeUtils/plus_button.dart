@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PlusButton extends StatelessWidget {
   final function;
 
-  PlusButton({this.function});
+  const PlusButton({super.key, this.function});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +18,10 @@ class PlusButton extends StatelessWidget {
           boxShadow: [
               BoxShadow(
                   color: Colors.grey.shade500,
-                  offset: Offset(4.0, 4.0),
+                  offset: const Offset(4.0, 4.0),
                   blurRadius: 15.0,
                   spreadRadius: 1.0),
-              BoxShadow(
+              const BoxShadow(
                   color: Colors.white,
                   offset: Offset(-4.0, -4.0),
                   blurRadius: 15.0,

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../initial/login.dart';
+import 'homeUtils/loading_circle.dart';
 
 class SettingsPage extends StatefulWidget {
   final User user;
@@ -54,7 +55,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: 16.0),
             _isSigningOut
-                ? const CircularProgressIndicator()
+                // ? const CircularProgressIndicator()
+                ? const LoadingCircle()
                 : ElevatedButton(
               onPressed: () async {
                 setState(() {

@@ -7,16 +7,27 @@ import 'package:wealthwise/screens/main/homeUtils/top_card.dart';
 import 'package:wealthwise/screens/main/homeUtils/transaction.dart';
 import 'package:wealthwise/utils/google_sheets_Api.dart';
 
+import 'package:gsheets/gsheets.dart';
+
 
 class HomePage extends StatefulWidget {
    final User user;
    const HomePage({super.key, required this.user});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+
+  final GoogleSheetsApi _googleSheetsApi = GoogleSheetsApi();
+
+  @override
+  void initState() {
+    super.initState();
+    _googleSheetsApi.init();
+  }
+
   // collect user input
   final _textcontrollerAMOUNT = TextEditingController();
   final _textcontrollerITEM = TextEditingController();
@@ -30,11 +41,17 @@ class _HomePageState extends State<HomePage> {
       _textcontrollerAMOUNT.text,
       _isIncome,
     );
+
+    GoogleSheetsApi.loadTransactions();
     setState(() {});
   }
 
+
+
   // new transaction
   void _newTransaction() {
+    _textcontrollerITEM.text = '';
+    _textcontrollerAMOUNT.text = '';
     showDialog(
         barrierDismissible: false,
         context: context,
@@ -42,14 +59,14 @@ class _HomePageState extends State<HomePage> {
           return StatefulBuilder(
             builder: (BuildContext context, setState) {
               return AlertDialog(
-                title: Text('N E W  T R A N S A C T I O N'),
+                title: const Text('N E W  T R A N S A C T I O N'),
                 content: SingleChildScrollView(
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text('Expense'),
+                          const Text('Expense'),
                           Switch(
                             value: _isIncome,
                             onChanged: (newValue) {
@@ -58,10 +75,10 @@ class _HomePageState extends State<HomePage> {
                               });
                             },
                           ),
-                          Text('Income'),
+                          const Text('Income'),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                       Row(
@@ -70,7 +87,8 @@ class _HomePageState extends State<HomePage> {
                             child: Form(
                               key: _formKey,
                               child: TextFormField(
-                                decoration: InputDecoration(
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   hintText: 'Amount?',
                                 ),
@@ -86,14 +104,14 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                       Row(
                         children: [
                           Expanded(
                             child: TextField(
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
                                 hintText: 'For what?',
                               ),
@@ -109,14 +127,14 @@ class _HomePageState extends State<HomePage> {
                   MaterialButton(
                     color: Colors.grey[600],
                     child:
-                        Text('Cancel', style: TextStyle(color: Colors.white)),
+                        const Text('Cancel', style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   MaterialButton(
                     color: Colors.grey[600],
-                    child: Text('Enter', style: TextStyle(color: Colors.white)),
+                    child: const Text('Enter', style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _enterTransaction();
@@ -131,14 +149,23 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
+  @override
+  void dispose() {
+    _textcontrollerAMOUNT.dispose();
+    _textcontrollerITEM.dispose();
+    super.dispose();
+  }
+
   // wait for the data to be fetched from google sheets
   bool timerHasStarted = false;
   void startLoading() {
     timerHasStarted = true;
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       if (GoogleSheetsApi.loading == false) {
         setState(() {});
         timer.cancel();
+      } else {
+        setState(() {});
       }
     });
   }
@@ -156,43 +183,45 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(25.0),
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             TopNeuCard(
               balance: (GoogleSheetsApi.calculateIncome() -
                       GoogleSheetsApi.calculateExpense())
-                  .toString(),
-              income: GoogleSheetsApi.calculateIncome().toString(),
-              expense: GoogleSheetsApi.calculateExpense().toString(),
+                  .toStringAsFixed(2),
+              income: GoogleSheetsApi.calculateIncome().toStringAsFixed(2),
+              expense: GoogleSheetsApi.calculateExpense().toStringAsFixed(2),
             ),
             Expanded(
-              child: Container(
-                child: Center(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
+              child: Center(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Expanded(
+                      child: StreamBuilder<List<List<dynamic>>>(
+                        stream: Stream.fromIterable([GoogleSheetsApi.currentTransactions]),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<List<String>> data = snapshot.data!.map((list) => list.map((value) => value.toString()).toList()).toList();
+                            return ListView.builder(
+                              itemCount: data.length,
+                              itemBuilder: (context, index) => MyTransaction(
+                                transactionName: data[index][0],
+                                money: data[index][1],
+                                expenseOrIncome: data[index][2],
+                                index: index,
+                              ),
+                            );
+                          } else {
+                            return const LoadingCircle();
+                          }
+                        },
                       ),
-                      Expanded(
-                        child: GoogleSheetsApi.loading == true
-                            ? LoadingCircle()
-                            : ListView.builder(
-                                itemCount:
-                                    GoogleSheetsApi.currentTransactions.length,
-                                itemBuilder: (context, index) {
-                                  return MyTransaction(
-                                    transactionName: GoogleSheetsApi
-                                        .currentTransactions[index][0],
-                                    money: GoogleSheetsApi
-                                        .currentTransactions[index][1],
-                                    expenseOrIncome: GoogleSheetsApi
-                                        .currentTransactions[index][2],
-                                  );
-                                }),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
               ),
             ),

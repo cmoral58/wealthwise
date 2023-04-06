@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:wealthwise/screens/main/homeUtils/loading_circle.dart';
+import 'package:wealthwise/utils/google_sheets_Api.dart';
 
-class MyTransaction extends StatelessWidget {
+class MyTransaction extends StatefulWidget {
   final String transactionName;
   final String money;
   final String expenseOrIncome;
+  final int index;
 
-  MyTransaction({
+  const MyTransaction({super.key,
     required this.transactionName,
     required this.money,
     required this.expenseOrIncome,
+    required this.index,
   });
 
+  @override
+  State<MyTransaction> createState() => _MyTransactionState();
+}
+
+class _MyTransactionState extends State<MyTransaction> {
+  bool _isDeleting = false;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -18,7 +28,7 @@ class MyTransaction extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Container(
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           color: Colors.grey[100],
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -26,20 +36,20 @@ class MyTransaction extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                         shape: BoxShape.circle, color: Colors.grey[500]),
-                    child: Center(
+                    child: const Center(
                       child: Icon(
                         Icons.attach_money_outlined,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  Text(transactionName,
+                  Text(widget.transactionName,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[700],
@@ -47,13 +57,39 @@ class MyTransaction extends StatelessWidget {
                 ],
               ),
               Text(
-                (expenseOrIncome == 'expense' ? '-' : '+') + '\$' + money,
+                '${widget.expenseOrIncome == 'expense' ? '-' : '+'}\$${widget.money}',
                 style: TextStyle(
                   //fontWeight: FontWeight.bold,
                   fontSize: 16,
                   color:
-                      expenseOrIncome == 'expense' ? Colors.red : Colors.green,
+                      widget.expenseOrIncome == 'expense' ? Colors.red : Colors.green,
                 ),
+              ),
+              _isDeleting
+              ? const LoadingCircle()
+                  : IconButton(
+                onPressed: () async {
+                  setState(() {
+                    _isDeleting = true;
+                  });
+
+                  try {
+                    await GoogleSheetsApi.deleteTransaction(widget.index);
+                  } catch (e) {
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   const SnackBar(
+                    //     content: Text('Failed to delete transaction.'),
+                    //     backgroundColor: Colors.red,
+                    //   ),
+                    // );
+                    print(e);
+                  }
+
+                  setState(() {
+                    _isDeleting = false;
+                  });
+                },
+                icon: const Icon(Icons.delete),
               ),
             ],
           ),

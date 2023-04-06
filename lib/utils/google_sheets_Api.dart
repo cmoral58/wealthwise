@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:gsheets/gsheets.dart';
 
 // Gsheets credentials
@@ -17,16 +19,21 @@ class GoogleSheetsApi{
   }
   ''';
 
+
+
   //set up and connect to the spreadsheet
 
   static const _spreadsheetId = '1oZauq04wjyto8SQlK2hRj_vy4jdmbY5MfGgsFJIDWuw';
   static final _gsheets = GSheets(_credentials);
   static Worksheet? _worksheet;
 
-  //some variables to keep track off..
+  //some variables to keep track of..
   static int numberOfTransactions = 0;
   static List<List<dynamic>> currentTransactions = []; // List of current transactions
   static bool loading = true; // to keep track of the loading process
+  static late StreamController<List<List<dynamic>>> _transactionsController;
+  static Stream<List<List<dynamic>>> get transactionsStream =>
+      _transactionsController.stream.asBroadcastStream();
 
  // initialise the spreadsheet
   Future init() async {
@@ -47,16 +54,16 @@ class GoogleSheetsApi{
   }
 
   // load existing notes from the spreadsheet
-  static Future loadTransactions() async {
+  static Stream<List<List<dynamic>>> loadTransactions() async* {
     if (_worksheet == null) return;
 
     for (int i = 1; i < numberOfTransactions; i++) {
       final String transactionName =
-          await _worksheet!.values.value(column: 1, row: i + 1); //Store values in 1st column
+      await _worksheet!.values.value(column: 1, row: i + 1); //Store values in 1st column
       final String transactionAmount =
-          await _worksheet!.values.value(column: 2, row: i + 1); //Store values in 2nd column
+      await _worksheet!.values.value(column: 2, row: i + 1); //Store values in 2nd column
       final String transactionType =
-          await _worksheet!.values.value(column: 3, row: i + 1); //Store values in 3rd column
+      await _worksheet!.values.value(column: 3, row: i + 1); //Store values in 3rd column
 
       if (currentTransactions.length < numberOfTransactions) { //Add input to current list of transactions
         currentTransactions.add([
@@ -66,9 +73,8 @@ class GoogleSheetsApi{
         ]);
       }
     }
-    print(currentTransactions);
-    // this will stop the circular loading indicator
-    loading = false;
+
+    yield currentTransactions;
   }
 
   // insert a new transaction
@@ -108,4 +114,37 @@ class GoogleSheetsApi{
     }
     return totalExpense;
   }
+
+  // delete a transaction by index
+  static Future<void> deleteTransaction(int index) async {
+    if (_worksheet == null) return;
+
+    if (index < 0 || index >= currentTransactions.length) {
+      throw ArgumentError('Invalid transaction index: $index');
+    }
+
+    // delete the row from the worksheet
+    await _worksheet!.deleteRow(index + 2);
+
+    // remove the transaction from the current list
+    currentTransactions.removeAt(index);
+
+    // update the number of transactions
+    numberOfTransactions = currentTransactions.length;
+
+    // notify listeners that the transaction list has changed
+    _transactionsController.add(List.from(currentTransactions));
+  }
+
+  // refresh the transactions list from the spreadsheet
+  static Future refreshTransactions() async {
+    if (_worksheet == null) return;
+
+    // clear the current transactions list
+    currentTransactions.clear();
+
+    // load the transactions from the spreadsheet
+    await loadTransactions();
+  }
+
 }
