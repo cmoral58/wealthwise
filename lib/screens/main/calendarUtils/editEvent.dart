@@ -134,21 +134,6 @@ class _EditEventScreenState extends State<EditEventScreen> {
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () => _saveChanges(),
-                // onPressed: () async {
-                //   if (_formKey.currentState!.validate()) {
-                //     await FirebaseFirestore.instance
-                //         .collection('users')
-                //         .doc(widget.userId)
-                //         .collection('events')
-                //         .doc(widget.eventId)
-                //         .update({
-                //       'title': _titleController.text,
-                //       'description': _descriptionController.text,
-                //       'event_date': _eventDate,
-                //     });
-                //     Navigator.of(context).pop();
-                //   }
-                // },
                 child: const Text('Save'),
               ),
             ],

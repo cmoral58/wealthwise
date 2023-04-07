@@ -25,7 +25,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   late final DateTime _firstDay = DateTime(DateTime.now().year - 1, 1, 1);
   late final DateTime _lastDay = DateTime(DateTime.now().year + 1, 12, 31);
 
-  TextEditingController _textController = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
   DateTime? _eventDate;
 
   @override
