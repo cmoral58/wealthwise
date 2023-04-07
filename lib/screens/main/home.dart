@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:wealthwise/screens/main/homeUtils/loading_circle.dart';
 import 'package:wealthwise/screens/main/homeUtils/plus_button.dart';
 import 'package:wealthwise/screens/main/homeUtils/top_card.dart';
@@ -21,11 +22,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   final GoogleSheetsApi _googleSheetsApi = GoogleSheetsApi();
+  final TextEditingController _textController = TextEditingController();
+  late DateTime _selectedDate;
 
   @override
   void initState() {
     super.initState();
     _googleSheetsApi.init();
+    _selectedDate = DateTime.now();
+    _textController.text = _selectedDate != null ? DateFormat('yyyy-MM-dd').format(_selectedDate!) : '';
   }
 
   // collect user input
@@ -40,6 +45,8 @@ class _HomePageState extends State<HomePage> {
       _textcontrollerITEM.text,
       _textcontrollerAMOUNT.text,
       _isIncome,
+      widget.user.uid,
+      _selectedDate,
     );
 
     GoogleSheetsApi.loadTransactions();
@@ -120,6 +127,37 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              readOnly: true,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'Select Date',
+                              ),
+                              controller: _textController,
+                              onTap: () async {
+                                DateTime? selectedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2021),
+                                  lastDate: DateTime(2030),
+                                );
+                                if (selectedDate != null) {
+                                  setState(() {
+                                    _selectedDate = selectedDate;
+                                    _textController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -130,6 +168,9 @@ class _HomePageState extends State<HomePage> {
                         const Text('Cancel', style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       Navigator.of(context).pop();
+                      setState(() {
+                        _textController.clear();
+                      });
                     },
                   ),
                   MaterialButton(
@@ -139,6 +180,9 @@ class _HomePageState extends State<HomePage> {
                       if (_formKey.currentState!.validate()) {
                         _enterTransaction();
                         Navigator.of(context).pop();
+                        setState(() {
+                          _textController.clear();
+                        });
                       }
                     },
                   )
@@ -187,11 +231,11 @@ class _HomePageState extends State<HomePage> {
               height: 30,
             ),
             TopNeuCard(
-              balance: (GoogleSheetsApi.calculateIncome() -
-                      GoogleSheetsApi.calculateExpense())
+              balance: (GoogleSheetsApi.calculateIncome(widget.user.uid) -
+                      GoogleSheetsApi.calculateExpense(widget.user.uid))
                   .toStringAsFixed(2),
-              income: GoogleSheetsApi.calculateIncome().toStringAsFixed(2),
-              expense: GoogleSheetsApi.calculateExpense().toStringAsFixed(2),
+              income: GoogleSheetsApi.calculateIncome(widget.user.uid).toStringAsFixed(2),
+              expense: GoogleSheetsApi.calculateExpense(widget.user.uid).toStringAsFixed(2),
             ),
             Expanded(
               child: Center(
@@ -207,13 +251,22 @@ class _HomePageState extends State<HomePage> {
                           if (snapshot.hasData) {
                             List<List<String>> data = snapshot.data!.map((list) => list.map((value) => value.toString()).toList()).toList();
                             return ListView.builder(
-                              itemCount: data.length,
-                              itemBuilder: (context, index) => MyTransaction(
-                                transactionName: data[index][0],
-                                money: data[index][1],
-                                expenseOrIncome: data[index][2],
-                                index: index,
-                              ),
+                                shrinkWrap: true,
+                                itemCount: data.length,
+                                itemBuilder: (context, index) {
+                                  if(data[index][3] == widget.user.uid) {
+                                    return MyTransaction(
+                                      transactionName: data[index][0],
+                                      money: data[index][1],
+                                      expenseOrIncome: data[index][2],
+                                      userId: widget.user.uid,
+                                      selectedDate: _selectedDate,
+                                      index: index,
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
+                                }
                             );
                           } else {
                             return const LoadingCircle();

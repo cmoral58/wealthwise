@@ -1,4 +1,6 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:wealthwise/screens/main/homeUtils/loading_circle.dart';
 import 'package:wealthwise/utils/google_sheets_Api.dart';
 
@@ -7,12 +9,16 @@ class MyTransaction extends StatefulWidget {
   final String money;
   final String expenseOrIncome;
   final int index;
+  final String userId;
+  final DateTime selectedDate;
 
   const MyTransaction({super.key,
     required this.transactionName,
     required this.money,
     required this.expenseOrIncome,
     required this.index,
+    required this.userId,
+    required this.selectedDate,
   });
 
   @override
@@ -20,6 +26,12 @@ class MyTransaction extends StatefulWidget {
 }
 
 class _MyTransactionState extends State<MyTransaction> {
+
+  String returnMonth(DateTime date) {
+    return new DateFormat.MMMM().format(date);
+  }
+  
+  
   bool _isDeleting = false;
   @override
   Widget build(BuildContext context) {
@@ -74,7 +86,7 @@ class _MyTransactionState extends State<MyTransaction> {
                   });
 
                   try {
-                    await GoogleSheetsApi.deleteTransaction(widget.index);
+                    await GoogleSheetsApi.deleteTransaction(widget.index, widget.userId);
                   } catch (e) {
                     // ScaffoldMessenger.of(context).showSnackBar(
                     //   const SnackBar(

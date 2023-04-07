@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:calendar_view/calendar_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gsheets/gsheets.dart';
+import 'package:intl/intl.dart';
 
 // Gsheets credentials
 class GoogleSheetsApi{
@@ -64,76 +67,106 @@ class GoogleSheetsApi{
       await _worksheet!.values.value(column: 2, row: i + 1); //Store values in 2nd column
       final String transactionType =
       await _worksheet!.values.value(column: 3, row: i + 1); //Store values in 3rd column
+      final String userId =
+          await _worksheet!.values.value(column: 4, row: i + 1);
+      final DateTime selectedDate =
+          (await _worksheet!.values.value(column: 5, row: i + 1)) as DateTime;
+
+
+      String returnMonth(DateTime date) {
+        return new DateFormat.MMMM().format(date);
+      }
+
 
       if (currentTransactions.length < numberOfTransactions) { //Add input to current list of transactions
         currentTransactions.add([
           transactionName,
           transactionAmount,
           transactionType,
+          userId,
+          returnMonth(selectedDate),
         ]);
       }
     }
+
 
     yield currentTransactions;
   }
 
   // insert a new transaction
-  static Future insert(String name, String amount, bool _isIncome) async {
+  static Future insert(String name, String amount, bool _isIncome, String userId, DateTime selectedDate) async {
     if (_worksheet == null) return;
     numberOfTransactions++;
+    String returnMonth(DateTime date) {
+      return new DateFormat.MMMM().format(date);
+    }
     currentTransactions.add([
       name,
       amount,
       _isIncome == true ? 'income' : 'expense',
+      userId,
+      returnMonth(selectedDate),
     ]);
     await _worksheet!.values.appendRow([
       name,
       amount,
       _isIncome == true ? 'income' : 'expense',
+      userId,
+      returnMonth(selectedDate),
     ]);
   }
 
   // CALCULATE THE TOTAL INCOME!
-  static double calculateIncome() {
+  static double calculateIncome(String userId) {
     double totalIncome = 0;
     for (int i = 0; i < currentTransactions.length; i++) {
-      if (currentTransactions[i][2] == 'income') {
-        totalIncome += double.parse(currentTransactions[i][1]);
+      if(currentTransactions[i][3] == userId) {
+        if (currentTransactions[i][2] == 'income') {
+          totalIncome += double.parse(currentTransactions[i][1]);
+        }
       }
+
     }
     return totalIncome;
   }
 
   // CALCULATE THE TOTAL EXPENSE!
-  static double calculateExpense() {
+  static double calculateExpense(String userId) {
     double totalExpense = 0;
     for (int i = 0; i < currentTransactions.length; i++) {
-      if (currentTransactions[i][2] == 'expense') {
-        totalExpense += double.parse(currentTransactions[i][1]);
+      if(currentTransactions[i][3] == userId) {
+        if (currentTransactions[i][2] == 'expense') {
+          totalExpense += double.parse(currentTransactions[i][1]);
+        }
       }
+
     }
     return totalExpense;
   }
 
   // delete a transaction by index
-  static Future<void> deleteTransaction(int index) async {
+  static Future<void> deleteTransaction(int index, String userId) async {
     if (_worksheet == null) return;
 
     if (index < 0 || index >= currentTransactions.length) {
       throw ArgumentError('Invalid transaction index: $index');
     }
 
-    // delete the row from the worksheet
-    await _worksheet!.deleteRow(index + 2);
+    if(currentTransactions[index][3] == userId) {
+      // delete the row from the worksheet
+      await _worksheet!.deleteRow(index + 2);
 
-    // remove the transaction from the current list
-    currentTransactions.removeAt(index);
+      // remove the transaction from the current list
+      currentTransactions.removeAt(index);
 
-    // update the number of transactions
-    numberOfTransactions = currentTransactions.length;
+      // update the number of transactions
+      numberOfTransactions = currentTransactions.length;
 
-    // notify listeners that the transaction list has changed
-    _transactionsController.add(List.from(currentTransactions));
+      // notify listeners that the transaction list has changed
+      _transactionsController.add(List.from(currentTransactions));
+    }
+
+
   }
 
   // refresh the transactions list from the spreadsheet

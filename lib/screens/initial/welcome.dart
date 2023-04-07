@@ -15,87 +15,91 @@ class WelcomePage extends StatelessWidget {
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 20,
+              height: MediaQuery.of(context).size.height / 10,
             ),
-            CarouselSlider(
-                items: [
-                  Container(
-                    margin: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
-                          stops: const [
-                            0.1,
-                            0.7,
-                          ],
-                          colors: [
-                            Colors.lightBlue.shade100,
-                            const Color.fromRGBO(242, 249, 255, 1),
-                          ],
-                        ),
-                      borderRadius: BorderRadius.circular(10.0),
-                      image: const DecorationImage(
-                        image: AssetImage('images/save.png'),
-                        fit: BoxFit.fitWidth,
-                      )
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
-                          stops: const [
-                            0.1,
-                            0.7,
-                          ],
-                          colors: [
-                            Colors.lightBlue.shade100,
-                            const Color.fromRGBO(242, 249, 255, 1),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                        image: const DecorationImage(
-                          image: AssetImage('images/invest.png'),
-                          fit: BoxFit.fitWidth,
-                        )
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
-                          stops: const [
-                            0.1,
-                            0.7,
-                          ],
-                          colors: [
-                            Colors.lightBlue.shade100,
-                            const Color.fromRGBO(242, 249, 255, 1),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                        image: const DecorationImage(
-                          image: AssetImage('images/calendar.png'),
-                          fit: BoxFit.fitWidth,
-                        )
-                    ),
-                  ),
-                ], 
-                options: CarouselOptions(
-                  height: MediaQuery.of(context).size.height / 2,
-                  enlargeCenterPage: true,
-                  autoPlay: true,
-                  aspectRatio: 16/9,
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  enableInfiniteScroll: true,
-                  autoPlayAnimationDuration: const Duration(milliseconds: 900),
-                  viewportFraction: 0.9,
-                ),
+            // CarouselSlider(
+            //     items: [
+            //       Container(
+            //         margin: const EdgeInsets.all(8.0),
+            //         decoration: BoxDecoration(
+            //             gradient: LinearGradient(
+            //               begin: Alignment.topRight,
+            //               end: Alignment.bottomLeft,
+            //               stops: const [
+            //                 0.1,
+            //                 0.7,
+            //               ],
+            //               colors: [
+            //                 Colors.lightBlue.shade100,
+            //                 const Color.fromRGBO(242, 249, 255, 1),
+            //               ],
+            //             ),
+            //           borderRadius: BorderRadius.circular(10.0),
+            //           image: const DecorationImage(
+            //             image: AssetImage('images/save.png'),
+            //             fit: BoxFit.fitWidth,
+            //           )
+            //         ),
+            //       ),
+            //       Container(
+            //         margin: const EdgeInsets.all(8.0),
+            //         decoration: BoxDecoration(
+            //             gradient: LinearGradient(
+            //               begin: Alignment.topRight,
+            //               end: Alignment.bottomLeft,
+            //               stops: const [
+            //                 0.1,
+            //                 0.7,
+            //               ],
+            //               colors: [
+            //                 Colors.lightBlue.shade100,
+            //                 const Color.fromRGBO(242, 249, 255, 1),
+            //               ],
+            //             ),
+            //             borderRadius: BorderRadius.circular(10.0),
+            //             image: const DecorationImage(
+            //               image: AssetImage('images/invest.png'),
+            //               fit: BoxFit.fitWidth,
+            //             )
+            //         ),
+            //       ),
+            //       Container(
+            //         margin: const EdgeInsets.all(8.0),
+            //         decoration: BoxDecoration(
+            //           gradient: LinearGradient(
+            //               begin: Alignment.topRight,
+            //               end: Alignment.bottomLeft,
+            //               stops: const [
+            //                 0.1,
+            //                 0.7,
+            //               ],
+            //               colors: [
+            //                 Colors.lightBlue.shade100,
+            //                 const Color.fromRGBO(242, 249, 255, 1),
+            //               ],
+            //             ),
+            //             borderRadius: BorderRadius.circular(10.0),
+            //             image: const DecorationImage(
+            //               image: AssetImage('images/calendar.png'),
+            //               fit: BoxFit.fitWidth,
+            //             )
+            //         ),
+            //       ),
+            //     ],
+            //     options: CarouselOptions(
+            //       height: MediaQuery.of(context).size.height / 2,
+            //       enlargeCenterPage: true,
+            //       autoPlay: true,
+            //       aspectRatio: 16/9,
+            //       autoPlayCurve: Curves.fastOutSlowIn,
+            //       enableInfiniteScroll: true,
+            //       autoPlayAnimationDuration: const Duration(milliseconds: 900),
+            //       viewportFraction: 0.9,
+            //     ),
+            // ),
+            Image.asset(
+              'images/logo.png',
+              width: MediaQuery.of(context).size.width,
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -126,7 +130,7 @@ class WelcomePage extends StatelessWidget {
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 5,
+              height: MediaQuery.of(context).size.height / 1.8,
             ),
             Center(
               child: SizedBox(
