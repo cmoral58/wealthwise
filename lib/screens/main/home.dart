@@ -195,9 +195,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    super.dispose();
     _textcontrollerAMOUNT.dispose();
     _textcontrollerITEM.dispose();
-    super.dispose();
+
   }
 
   // wait for the data to be fetched from google sheets
@@ -209,6 +210,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {});
         timer.cancel();
       } else {
+        if(!mounted) return;
         setState(() {});
       }
     });

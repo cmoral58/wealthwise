@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wealthwise/screens/main/homeUtils/plus_button.dart';
 
 import 'calendarUtils/editEvent.dart';
 import 'homeUtils/loading_circle.dart';
@@ -148,15 +149,98 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
+  void _addEvent() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        DateTime _eventDate = DateTime.now();
+        String _eventTitle = '';
+        String _eventDescription = '';
+        return AlertDialog(
+          title: const Text('A D D  E V E N T'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _textController,
+                  readOnly: true,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Date',
+                  ),
+                  onTap: () async {
+                    DateTime? selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2021),
+                      lastDate: DateTime(2030),
+                    );
+                    if (selectedDate != null) {
+                      setState(() {
+                        _eventDate = selectedDate;
+                        _textController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Title',
+                  ),
+                  onChanged: (value) {
+                    _eventTitle = value;
+                  },
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Description',
+                  ),
+                  onChanged: (value) {
+                    _eventDescription = value;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            MaterialButton(
+              color: Colors.grey[600],
+              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            MaterialButton(
+              color: Colors.grey[600],
+              child: const Text('Save', style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                FirebaseFirestore.instance
+                    .collection('events')
+                    .doc(widget.userId)
+                    .collection('userEvents')
+                    .add({
+                  'date': _eventDate,
+                  'title': _eventTitle,
+                  'description': _eventDescription,
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      appBar: AppBar(
-        title: const Text(
-          'Calendar',
-        ),
-      ),
       body: FutureBuilder<Map<DateTime, List<dynamic>>>(
         future: getEvents(),
         builder: (BuildContext context,
@@ -168,6 +252,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 25,
+              ),
               TableCalendar(
                 headerStyle: const HeaderStyle(
                   titleCentered: true,
@@ -248,101 +335,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ),
               ),
               Expanded(child: _buildEventList()),
-            ],
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromRGBO(64, 91, 159, 1),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        onPressed: () async {
-          await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              DateTime _eventDate = DateTime.now();
-              String _eventTitle = '';
-              String _eventDescription = '';
-              return AlertDialog(
-                title: const Text('A D D  E V E N T'),
-                content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        controller: _textController,
-                        readOnly: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Date',
-                        ),
-                        onTap: () async {
-                          DateTime? selectedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2021),
-                            lastDate: DateTime(2030),
-                          );
-                          if (selectedDate != null) {
-                            setState(() {
-                              _eventDate = selectedDate;
-                              _textController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
-                            });
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Title',
-                        ),
-                        onChanged: (value) {
-                          _eventTitle = value;
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Description',
-                        ),
-                        onChanged: (value) {
-                          _eventDescription = value;
-                        },
-                      ),
-                    ],
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 25.0),
+                  child: PlusButton(
+                    function: _addEvent,
                   ),
                 ),
-                actions: [
-                  MaterialButton(
-                    color: Colors.grey[600],
-                    child: const Text('Cancel', style: TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  MaterialButton(
-                    color: Colors.grey[600],
-                    child: const Text('Save', style: TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      FirebaseFirestore.instance
-                          .collection('events')
-                          .doc(widget.userId)
-                          .collection('userEvents')
-                          .add({
-                        'date': _eventDate,
-                        'title': _eventTitle,
-                        'description': _eventDescription,
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              );
-            },
+              )
+            ],
           );
         },
       ),
