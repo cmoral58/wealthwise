@@ -10,43 +10,83 @@ class TaskInfoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<AppViewModel>(builder:(context, viewModel, child){
-      return Row(children: [],
-      child: Expanded(
-        flex: 1,
-      child: Container(
-        decoration: BoxDecoration(color:
-        viewModel.clrLvl2,
-        borderRadius: BorderRadius.circular(10)),
-        child: Column(children: [
+      return Container(
+        margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+        child: Row(
+        children: [ 
+          //Total Tasks
           Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.center,  
-              child: FittedBox(
-                  child: Text("${viewModel.numTasks}",
-                      style: TextStyle(
-                          fontSize: 28,
-                          color: viewModel.clrLvl3,
-                          fontWeight: FontWeight.bold)),
-                )
-              ),
-            ),
+          flex: 1,
+        child: Container(
+          decoration: BoxDecoration(color:
+          viewModel.clrLvl2,
+          borderRadius: BorderRadius.circular(10)),
+          child: Column(children: [
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Align(
-                alignment: Alignment.topCenter,
+                alignment: Alignment.center,  
                 child: FittedBox(
-                  child:  Text("Total Tasks",
-                  style: TextStyle(
-                    color: viewModel.clrLvl4, fontWeight: FontWeight.w600),)
+                    child: Text("${viewModel.numTasks}",
+                        style: TextStyle(
+                            fontSize: 28,
+                            color: viewModel.clrLvl3,
+                            fontWeight: FontWeight.bold)),
+                  )
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: FittedBox(
+                    child:  Text("Total Tasks",
+                    style: TextStyle(
+                      color: viewModel.clrLvl4, fontWeight: FontWeight.w600),)
+                  )
                 )
               )
-            
-            )
-         ],
-        ));
-        ),
-    );
+           ],
+          ));
+          ),
+          SizedBox(width: 20),
+          //Remaining
+          Expanded(
+          flex: 1,
+        child: Container(
+          decoration: BoxDecoration(color:
+          viewModel.clrLvl2,
+          borderRadius: BorderRadius.circular(10)),
+          child: Column(children: [
+            Expanded(
+              flex: 2,s
+              child: Align(
+                alignment: Alignment.center,  
+                child: FittedBox(
+                    child: Text("${viewModel.numTasksRemaining}",
+                        style: TextStyle(
+                            fontSize: 28,
+                            color: viewModel.clrLvl3,
+                            fontWeight: FontWeight.bold)),
+                  )
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: FittedBox(
+                    child:  Text("Remaining",
+                    style: TextStyle(
+                      color: viewModel.clrLvl4, fontWeight: FontWeight.w600),)
+                  )
+                )
+              )
+           ],
+          ))
+          ),
+          ),
+      );
     });
   }
 }
