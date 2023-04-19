@@ -59,7 +59,7 @@ class TaskInfoView extends StatelessWidget {
           borderRadius: BorderRadius.circular(10)),
           child: Column(children: [
             Expanded(
-              flex: 2,s
+              flex: 2,
               child: Align(
                 alignment: Alignment.center,  
                 child: FittedBox(
