@@ -1,0 +1,52 @@
+import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:wealthwise/view_models/app_view_model.dart';
+
+class TaskInfoView extends StatelessWidget {
+  const TaskInfoView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AppViewModel>(builder:(context, viewModel, child){
+      return Row(children: [],
+      child: Expanded(
+        flex: 1,
+      child: Container(
+        decoration: BoxDecoration(color:
+        viewModel.clrLvl2,
+        borderRadius: BorderRadius.circular(10)),
+        child: Column(children: [
+          Expanded(
+            flex: 2,
+            child: Align(
+              alignment: Alignment.center,  
+              child: FittedBox(
+                  child: Text("${viewModel.numTasks}",
+                      style: TextStyle(
+                          fontSize: 28,
+                          color: viewModel.clrLvl3,
+                          fontWeight: FontWeight.bold)),
+                )
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: FittedBox(
+                  child:  Text("Total Tasks",
+                  style: TextStyle(
+                    color: viewModel.clrLvl4, fontWeight: FontWeight.w600),)
+                )
+              )
+            
+            )
+         ],
+        ));
+        ),
+    );
+    });
+  }
+}
