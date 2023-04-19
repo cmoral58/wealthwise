@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-
 class PlanningScreen extends StatefulWidget {
   final User user;
   const PlanningScreen({super.key, required this.user});
@@ -13,8 +12,6 @@ class PlanningScreen extends StatefulWidget {
 }
 
 class _PlanningScreenState extends State<PlanningScreen> {
-
-
   @override
   void initState() {
     _currentUser = widget.user;
@@ -25,7 +22,6 @@ class _PlanningScreenState extends State<PlanningScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Text('Planning screen');
+    return Text('Planning Screen');
   }
 }
-
