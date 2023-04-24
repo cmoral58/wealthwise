@@ -1,0 +1,25 @@
+Testing Log for FirestoreService Unit Test
+
+Test Case ID: T001
+Test Input: A new event with date, description, and title fields.
+Corresponding Use Cases/Requirements: Add an event to the "events" collection in Firestore.
+Actual Output/Effect from Initial Testing: The test fails with the following error: "type 'Null' is not a subtype of type 'CollectionReference<Map<String, dynamic>>'".
+Expected Output/Effect: The test should pass, indicating that the event document was successfully added to Firestore.
+Action Taken: Updated the `FirestoreService.addEvent()` method to correctly reference the "events" collection in Firestore using the mock `FirebaseFirestore` instance.
+
+
+Test Case ID: T002
+Test Input: A new feedback with feedback and username fields.
+Corresponding Use Cases/Requirements: Add feedback to the "feedback" collection in Firestore.
+Actual Output/Effect from Initial Testing: The test fails with the following error: "type 'Null' is not a subtype of type 'CollectionReference<Map<String, dynamic>>'".
+Expected Output/Effect: The test should pass, indicating that the feedback document was successfully added to Firestore.
+Action Taken: Updated the `FirestoreService.addFeedback()` method to correctly reference the "feedback" collection in Firestore using the mock `FirebaseFirestore` instance.
+
+
+Test Case ID: T003
+Test Input: A Google sheet with 6 columns named 'Title', 'Amount', 'Expense/Income', 'User ID', 'Month', 'Day'. The second row of the sheet has the values 'Title', '100', 'Expense', 'User1', 'Jan', '1'.
+Corresponding Use Cases/Requirements: Verify that the 'values' module of the GSheets library can read data from a specified Google sheet.
+Actual Output/Effect from Initial Testing: The test passed successfully.
+Expected Output/Effect: The test should pass successfully.
+Action Taken: We created a test case to check if the GSheets library can read data from a specified Google sheet. We added values to the worksheet, read the second row of the sheet, defined the expected map, and compared the actual and expected maps. The test passed successfully, indicating that the GSheets library can read data from a specified Google sheet.
+

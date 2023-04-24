@@ -100,19 +100,23 @@ class GoogleSheetsApi{
     String returnMonth(DateTime date) {
       return new DateFormat.MMMM().format(date);
     }
+
     currentTransactions.add([
       name,
       amount,
       _isIncome == true ? 'income' : 'expense',
       userId,
       returnMonth(selectedDate),
+      selectedDate.weekday,
     ]);
+    // adds rows to google sheets
     await _worksheet!.values.appendRow([
       name,
       amount,
       _isIncome == true ? 'income' : 'expense',
-      userId,
-      returnMonth(selectedDate),
+      userId, // needed to fo user specific functionality
+      returnMonth(selectedDate), // needed to calculate monthly expenses
+      selectedDate.weekday, // needed to calculate weekly expenses
     ]);
   }
 

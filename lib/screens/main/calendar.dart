@@ -97,44 +97,52 @@ class _CalendarScreenState extends State<CalendarScreen> {
             if (date.year == _selectedDay.year &&
                 date.month == _selectedDay.month &&
                 date.day == _selectedDay.day) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.only(left: 15, right: 15, top: 5),
-                  child: Card(
-                    child: ListTile(
-                      title: Text(data['title']),
-                      subtitle: Text(data['description']),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditEventScreen(
-                                    userId: widget.userId,
-                                    eventId: snapshot.data!.docs[index].id,
-                                    user: widget.user,
+              return Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0,
+                  right: 15.0,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    color: Colors.grey[100],
+                    child: Card(
+                      shadowColor: Colors.transparent,
+                      color: Colors.grey[100],
+                      child: ListTile(
+                        title: Text(data['title']),
+                        subtitle: Text(data['description']),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditEventScreen(
+                                      userId: widget.userId,
+                                      eventId: snapshot.data!.docs[index].id,
+                                      user: widget.user,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              FirebaseFirestore.instance
-                                  .collection('events')
-                                  .doc(widget.userId)
-                                  .collection('userEvents')
-                                  .doc(snapshot.data!.docs[index].id)
-                                  .delete();
-                            },
-                          ),
-                        ],
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                FirebaseFirestore.instance
+                                    .collection('events')
+                                    .doc(widget.userId)
+                                    .collection('userEvents')
+                                    .doc(snapshot.data!.docs[index].id)
+                                    .delete();
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -255,83 +263,109 @@ class _CalendarScreenState extends State<CalendarScreen> {
               SizedBox(
                 height: MediaQuery.of(context).size.height / 25,
               ),
-              TableCalendar(
-                headerStyle: const HeaderStyle(
-                  titleCentered: true,
-                  formatButtonVisible: true,
-                  titleTextStyle: TextStyle(
-                    fontSize: 17,
-                    color: Colors.black,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold,
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0,
+                  right: 15.0,
+                  top: 20,
+                  bottom: 0
                 ),
-                daysOfWeekStyle: const  DaysOfWeekStyle(
-                  weekdayStyle: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold,
+                child: Container(
+                  height: MediaQuery.of(context).size.height / 2.1,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.grey[300],
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.shade500,
+                            offset: const Offset(4.0, 4.0),
+                            blurRadius: 15.0,
+                            spreadRadius: 1.0),
+                        const BoxShadow(
+                            color: Colors.white,
+                            offset: Offset(-4.0, -4.0),
+                            blurRadius: 15.0,
+                            spreadRadius: 1.0),
+                      ]),
+                  child: TableCalendar(
+                    headerStyle: const HeaderStyle(
+                      titleCentered: true,
+                      formatButtonVisible: false,
+                      titleTextStyle: TextStyle(
+                        fontSize: 17,
+                        color: Colors.black,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    daysOfWeekStyle: const  DaysOfWeekStyle(
+                      weekdayStyle: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                      ),
+                      weekendStyle: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    firstDay: _firstDay,
+                    lastDay: _lastDay,
+                    focusedDay: _focusedDay,
+                    // calendarFormat: _calendarFormat,
+                    // onFormatChanged: (format) {
+                    //   setState(() {
+                    //     _calendarFormat = format;
+                    //   });
+                    // },
+                    selectedDayPredicate: (DateTime date) {
+                      return isSameDay(_selectedDay, date);
+                    },
+                    onDaySelected: _onDaySelected,
+                    eventLoader: (DateTime date) {
+                      // return _events[date] as List;
+                      return _events[date]?.toList() ?? [];
+                    },
+                    calendarStyle: const CalendarStyle(
+                      defaultTextStyle: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                      ),
+                      todayTextStyle: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                      ),
+                      todayDecoration: BoxDecoration(
+                        color: Color.fromRGBO(150, 177, 253, 1.0),
+                        shape: BoxShape.circle,
+                      ),
+                      selectedDecoration: BoxDecoration(
+                        color: Color.fromRGBO(64, 91, 159, 1),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    calendarBuilders: CalendarBuilders(
+                      markerBuilder: (BuildContext context, DateTime date,
+                          List<dynamic> events) {
+                        if (events.isNotEmpty) {
+                          return Stack(
+                            children: [
+                              Positioned(
+                                right: 1,
+                                bottom: 1,
+                                child: _buildMarker(date, events.length),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    ),
                   ),
-                  weekendStyle: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                firstDay: _firstDay,
-                lastDay: _lastDay,
-                focusedDay: _focusedDay,
-                calendarFormat: _calendarFormat,
-                onFormatChanged: (format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                },
-                selectedDayPredicate: (DateTime date) {
-                  return isSameDay(_selectedDay, date);
-                },
-                onDaySelected: _onDaySelected,
-                eventLoader: (DateTime date) {
-                  // return _events[date] as List;
-                  return _events[date]?.toList() ?? [];
-                },
-                calendarStyle: const CalendarStyle(
-                  defaultTextStyle: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold,
-                  ),
-                  todayTextStyle: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold,
-                  ),
-                  todayDecoration: BoxDecoration(
-                    color: Color.fromRGBO(150, 177, 253, 1.0),
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: Color.fromRGBO(64, 91, 159, 1),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                calendarBuilders: CalendarBuilders(
-                  markerBuilder: (BuildContext context, DateTime date,
-                      List<dynamic> events) {
-                    if (events.isNotEmpty) {
-                      return Stack(
-                        children: [
-                          Positioned(
-                            right: 1,
-                            bottom: 1,
-                            child: _buildMarker(date, events.length),
-                          ),
-                        ],
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  },
                 ),
               ),
               Expanded(child: _buildEventList()),

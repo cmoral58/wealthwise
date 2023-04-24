@@ -1,15 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:wealthwise/screens/main/homeUtils/summary.dart';
+import 'package:wealthwise/screens/main/home.dart';
+import 'package:wealthwise/screens/main/homeUtils/view_transactions.dart';
 
 class TopNeuCard extends StatelessWidget {
   final String balance;
   final String income;
   final String expense;
+  final User user;
 
   const TopNeuCard({super.key,
     required this.balance,
     required this.expense, 
     required this.income,
+    required this.user,
     });
 
   @override
@@ -20,14 +24,15 @@ class TopNeuCard extends StatelessWidget {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return SummaryChart();
+              return ViewTransaction(user: user);
+              // return const SummaryChart();
             }
         );
       },
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Container(
-          height: 200,
+          height: MediaQuery.of(context).size.height / 4.3,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Colors.grey[300],
@@ -50,7 +55,7 @@ class TopNeuCard extends StatelessWidget {
                 Text('B A L A N C E',
                     style: TextStyle(color: Colors.grey[500], fontSize: 16)),
                 Text(
-                  '\$${balance}',
+                  '\$$balance',
                   style: TextStyle(color: Colors.grey[800], fontSize: 40),
                 ),
                 Padding(
@@ -84,7 +89,7 @@ class TopNeuCard extends StatelessWidget {
                               const SizedBox(
                                 height: 5,
                               ),
-                              Text('\$${income}',
+                              Text('\$$income',
                                   style: TextStyle(
                                       color: Colors.grey[600],
                                       fontWeight: FontWeight.bold)),
@@ -118,7 +123,7 @@ class TopNeuCard extends StatelessWidget {
                               const SizedBox(
                                 height: 5,
                               ),
-                              Text('\$${expense}',
+                              Text('\$$expense',
                                   style: TextStyle(
                                       color: Colors.grey[600],
                                       fontWeight: FontWeight.bold)),

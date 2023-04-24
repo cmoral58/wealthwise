@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:wealthwise/screens/main/dashboard.dart';
 import 'package:wealthwise/utils/google_sheets_Api.dart';
 import 'package:wealthwise/utils/google_sign_in.dart';
+import 'package:wealthwise/view_models/app_view_model.dart';
 import 'utils/firebase_options.dart';
 import 'screens/initial/welcome.dart';
 
@@ -26,33 +27,35 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
-      create:(context) => GoogleSignInProvider(),
-      child:
+      create: (context) => AppViewModel(),
+    child: ChangeNotifierProvider(
+        create:(context) => GoogleSignInProvider(),
+        child:
 
-      MaterialApp(
-        title: 'wealthwise',
-        theme: ThemeData(
-          primarySwatch: Colors.grey,
-        ),
-        home: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (BuildContext context, AsyncSnapshot snapshot){
-            if(snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
+        MaterialApp(
+          title: 'wealthwise',
+          theme: ThemeData(
+            primarySwatch: Colors.grey,
+          ),
+          home: StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              if(snapshot.hasError) {
+                return Text(snapshot.error.toString());
+              }
 
-            if(snapshot.data == null) {
-              return const WelcomePage();
-            }
-            else {
-              return Dashboard(user: FirebaseAuth.instance.currentUser!);
-            }
-          },
-        ),
-        // removes debug banner from app bar
-        debugShowCheckedModeBanner: false,
-      )
+              if(snapshot.data == null) {
+                return const WelcomePage();
+              }
+              else {
+                return Dashboard(user: FirebaseAuth.instance.currentUser!);
+              }
+            },
+          ),
+          // removes debug banner from app bar
+          debugShowCheckedModeBanner: false,
+        )
+    )
   );
 
 }
-

@@ -6,6 +6,7 @@ import 'package:wealthwise/screens/main/home.dart';
 import 'package:wealthwise/screens/main/calendar.dart';
 import 'package:wealthwise/screens/main/planning.dart';
 import 'package:wealthwise/screens/main/settings.dart';
+import 'package:wealthwise/views/task_page.dart';
 
 class Dashboard extends StatefulWidget {
   final User? user;
@@ -32,7 +33,8 @@ class _DashboardState extends State<Dashboard> {
   // navigation indexes for bottomNavigationBar
   late final List<Widget> _pages = [
     HomePage(user: _currentUser),
-    PlanningScreen(user: _currentUser),
+    // PlanningScreen(user: _currentUser),
+    TaskPage(),
     CalendarScreen(user: _currentUser, userId: userId,),
     SettingsPage(user: _currentUser),
   ];
